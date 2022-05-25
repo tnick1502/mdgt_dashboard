@@ -1,10 +1,4 @@
-from sqlalchemy import (
-    Column,
-    Date,
-    Float,
-    String,
-    Integer,
-)
+from sqlalchemy import Column, Date, Float, String, Integer
 from sqlalchemy.ext.declarative import declarative_base
 
 
@@ -38,5 +32,3 @@ class Prize(Base):
 
     date = Column(Date, primary_key=True)
     prize = Column(Float)
-
-

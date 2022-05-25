@@ -1,15 +1,19 @@
 import re
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, date
 import os
 import threading
+from database import Session
 import time
 
 from typing import Dict, List
-import pickle
+
 
 import xlrd
 from xlrd import open_workbook
+from models.reports import Report
+from services.reports import ReportsService
+import tables
 
 
 @dataclass
@@ -76,27 +80,13 @@ class Statment:
         """Подгрузка файла ведомости"""
         while True:
             if self.path:
-                self.data = Statment.read_excel_statment(self.path)
+                data = Statment.read_excel_statment(self.path)
+                if data != self.data:
+                    self.data = dict(data)
+                    self.update_reports()
                 time.sleep(5)
             else:
                 assert()
-
-    def dump(self, directory, name="statment.pickle"):
-        dump_data = {
-            "data": self.data,
-            "path": self.path
-        }
-        with open(directory + "/" + name, "wb") as file:
-            pickle.dump(dump_data, file)
-
-    def load(self, file):
-        with open(file, 'rb') as f:
-            load_data = pickle.load(f)
-        self.data = load_data["data"]
-        self.path = load_data["path"]
-
-    def set_data(self, data: 'Statment.data'):
-        self.data = data
 
     def get_month_count(self, date: datetime):
         result: Dict = {}
@@ -114,45 +104,57 @@ class Statment:
 
         return result
 
-    def get_interval_count(self, month_interval: int = 6):
-        result: Dict = {}
-        current_month = datetime.now().month
-        current_year = datetime.now().year
-
-        for i in range(month_interval):
-            if current_month == 0:
-                current_month = 12
-                current_year -= 1
-
-            result[datetime(year=current_year, month=current_month, day=1)] = \
-                self.get_month_count(datetime(year=current_year, month=current_month, day=1))
-
-            current_month -= 1
-
-        return {
-            "time": list(result.keys()),
-            "mathcad_report": [result[i].get("mathcad_report", 0) for i in result.keys()],
-            "python_compression_report": [result[i].get("python_compression_report", 0) for i in result.keys()],
-            "python_report": [result[i].get("python_report", 0) for i in result.keys()],
-            "python_dynamic_report": [result[i].get("python_dynamic_report", 0) for i in result.keys()],
-            "plaxis_report": [result[i].get("plaxis_report", 0) for i in result.keys()],
-            "physical_statement": [result[i].get("physical_statement", 0) for i in result.keys()],
-            "mechanics_statement": [result[i].get("mechanics_statement", 0) for i in result.keys()],
-        }
-
-    def str_reports(self):
+    def update_reports(self):
         now = datetime.now()
-        #self.update()
         res = self.get_month_count(datetime(year=now.year, month=now.month, day=1))
-        return f"""
-python: {res['python_report']}
-python динамика: {res['python_dynamic_report']}
-python компрессия: {res['python_compression_report']}
-mathCAD: {res['mathcad_report']}
-Ведомости физ: {res['physical_statement']}
-Ведомости мех: {res['mechanics_statement']}\n
-python от общего: {round((((res['python_report'] + res['python_compression_report'] + res['python_dynamic_report']) / (res['python_report'] + res['python_compression_report'] + res['python_dynamic_report'] + res['mathcad_report'])) * 100), 2)} %
-    """
+        res["python_all"] = res['python_report'] + res['python_compression_report'] + res['python_dynamic_report']
+        all = res["python_all"] + res['mathcad_report']
+        res["date"] = date(year=now.year, month=now.month, day=25)
+        if all:
+            res["python_percent"] = round((res["python_all"]/all)*100, 2)
+        else:
+            res["python_percent"] = 0.0
+
+        rep_data = Report(**res)
+        session = Session()
+
+        test_report = session.query(tables.Report).filter_by(date=res["date"]).first()
+        if not test_report :
+            report = tables.Report(**rep_data.dict())
+            session.add(report)
+            session.commit()
+            session.close()
+        else:
+            for field, value in rep_data:
+                setattr(test_report, field, value)
+            session.commit()
+            session.close()
+
+    def base_full(self):
+        for i in [1,2,3,4, 5]:
+            res = self.get_month_count(datetime(year=2022, month=i, day=1))
+            res["python_all"] = res['python_report'] + res['python_compression_report'] + res['python_dynamic_report']
+            all = res["python_all"] + res['mathcad_report']
+            res["date"] = date(year=2022, month=i, day=25)
+            if all:
+                res["python_percent"] = round((res["python_all"] / all) * 100, 2)
+            else:
+                res["python_percent"] = 0.0
+
+            rep_data = Report(**res)
+            session = Session()
+
+            test_report = session.query(tables.Report).filter_by(date=res["date"]).first()
+            if not test_report:
+                report = tables.Report(**rep_data.dict())
+                session.add(report)
+                session.commit()
+                session.close()
+            else:
+                for field, value in rep_data:
+                    setattr(test_report, field, value)
+                session.commit()
+                session.close()
 
     def str_pay(self, date=None):
         if date is None:
@@ -430,8 +432,7 @@ class XlsBook:
         return self.book.colour_map.get(color_index)
 
 if __name__ == "__main__":
-    from settings import setting
-    print(setting.statment_excel_path)
-    x = Statment(setting.statment_excel_path)
-    #print(x.str_reports())
+    from settings import settings
+    print(settings.statment_excel_path)
+    x = Statment(settings.statment_excel_path)
     #print(x.str_pay())
