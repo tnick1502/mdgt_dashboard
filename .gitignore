@@ -1,0 +1,11 @@
+venv
+database.sqlite3
+.env
+.idea
+__pycache__
+api/.idea
+api/__pycache__
+models/.idea
+models/__pycache__
+services/.idea
+services/__pycache__
