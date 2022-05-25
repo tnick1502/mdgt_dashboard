@@ -431,8 +431,88 @@ class XlsBook:
     def __get_color(self, color_index: int):
         return self.book.colour_map.get(color_index)
 
+class Prize:
+    def __init__(self, excel_directory):
+        self._excel_directory = excel_directory
+        self._prize = 0
+
+    def get_current_prize(self):
+        mounth, year = datetime.now().strftime('%m'), "20" +datetime.now().strftime('%y')
+
+        try:
+            path = os.path.join(
+                f'{self._excel_directory}{year}',
+                f'{mounth}.{year} - Учет офисного времени.xls')
+
+            if os.path.exists(path):
+
+                with xlrd.open_workbook(path) as workbook:
+                    worksheet = workbook.sheet_by_name('Итог')
+                    prize = worksheet.cell(0, 24).value
+
+                if prize == "ххх" or prize == "xxx":
+                    self._prize = 0.0
+                else:
+                    self._prize = float(prize)
+
+            else:
+                self._prize = 0.0
+
+        except:
+            print("4")
+            self._prize = 0.0
+
+    def update(self):
+        prize = Prize.get_prize(datetime.now().strftime('%m'), datetime.now().strftime('%y'), self._excel_path)
+
+        if prize in ["Премия не заполнена", "Нет файла", "Неверный запрос"]:
+            return ""
+
+        if float(prize) != float(self._prize):
+            self._prize = prize
+            self.save_json_prize()
+            return self.prize_massage()
+        else:
+            return ""
+
+    @staticmethod
+    def get_prize(mounth, year, path):
+
+        def test_m_y(mounth, year):
+            if len(mounth) <= 1:
+                mounth = "0" + mounth
+
+            if len(year) <= 3:
+                year = "20" + year
+            return mounth, year
+
+        mounth, year = test_m_y(mounth, year)
+
+        try:
+            path = f'{path}{year}/{mounth}.{year} - Учет офисного времени.xls'
+
+            if os.path.exists(path):
+
+                with xlrd.open_workbook(path) as workbook:
+                    worksheet = workbook.sheet_by_name('Итог')
+                    prize = worksheet.cell(0, 24).value
+
+                if prize == "ххх" or prize == "xxx":
+                    return "Премия не заполнена"
+                else:
+                    return str(prize)
+
+            else:
+                return "Нет файла"
+
+        except:
+            return "Неверный запрос"
+
 if __name__ == "__main__":
     from settings import settings
     print(settings.statment_excel_path)
-    x = Statment(settings.statment_excel_path)
+    #x = Statment(settings.statment_excel_path)
+    s = Prize(settings.prize_directory)
+    s.get_current_prize()
+    print(s._prize)
     #print(x.str_pay())
