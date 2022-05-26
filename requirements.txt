@@ -16,4 +16,5 @@ python-jose==3.3.0
 pathlib==1.0.1
 python-multipart==0.0.5
 python-dotenv==0.20.0
+loguru==0.6.0
 

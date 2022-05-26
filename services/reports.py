@@ -4,8 +4,8 @@ from fastapi import Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from models.reports import Report
 
-import tables
-from database import get_session
+import db.tables as tables
+from db.database import get_session
 
 class ReportsService:
     def __init__(self, session: Session = Depends(get_session)):

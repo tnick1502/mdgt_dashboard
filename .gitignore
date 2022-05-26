@@ -9,3 +9,5 @@ models/.idea
 models/__pycache__
 services/.idea
 services/__pycache__
+db/.idea
+db/__pycache__
