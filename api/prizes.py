@@ -11,10 +11,13 @@ router = APIRouter(
 
 
 @router.get("/", response_model=List[Prize])
-def get_prizes(date: date = None, service: PrizesService = Depends()):
-    if date:
-        return service.get(date)
+def get_prizes(service: PrizesService = Depends()):
     return service.get_all()
+
+
+@router.get("/{date}", response_model=Prize)
+def get_prize(date: date = None, service: PrizesService = Depends()):
+    return service.get(date)
 
 
 @router.post("/", response_model=Prize)

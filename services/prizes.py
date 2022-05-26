@@ -22,7 +22,8 @@ class PrizesService:
         return prizes
 
     def get(self, date: date) -> tables.Prize:
-        self._get(date)
+        prize = self._get(date)
+        return prize
 
     def create(self, prize_data: Prize) -> tables.Prize:
         prize = tables.Prize(**prize_data.dict())

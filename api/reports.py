@@ -11,10 +11,12 @@ router = APIRouter(
 
 
 @router.get("/", response_model=List[Report])
-def get_reports(date: date = None, service: ReportsService = Depends()):
-    if date:
-        return service.get(date)
+def get_reports(service: ReportsService = Depends()):
     return service.get_all()
+
+@router.get("/{date}", response_model=Report)
+def get_report(date: date = None, service: ReportsService = Depends()):
+    return service.get(date)
 
 
 @router.post("/", response_model=Report)

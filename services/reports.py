@@ -22,7 +22,8 @@ class ReportsService:
         return reports
 
     def get(self, date: date) -> tables.Report:
-        self._get(date)
+        report = self._get(date)
+        return report
 
     def create(self, report_data: Report) -> tables.Report:
         p_all = report_data.python_report + report_data.python_dynamic_report + report_data.python_compression_report
