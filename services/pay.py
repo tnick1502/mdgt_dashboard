@@ -22,13 +22,14 @@ tips = {
 }
 
 class PayService(ReportsService):
-    def get_pay(self, date: Optional[date]):
+    def get_pay(self):
+        reports = self.get_all()
+        return [PayService.convert(report) for report in reports]
+
+    def get_one_pay(self, date: Optional[date]):
         if date:
             report = self._get(date)
             return PayService.convert(report)
-
-        reports = self.get_all()
-        return [PayService.convert(report) for report in reports]
 
     @staticmethod
     def convert(report: tables.Report):
