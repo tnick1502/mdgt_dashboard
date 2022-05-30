@@ -177,7 +177,7 @@ def prize_parser(excel_directory):
     def update_run(excel_dir, base_prize):
         prize = get_current_prize(excel_dir)
 
-        if base_prize != prize:
+        if prize > base_prize:
             data = {
                 "date": actual_date(),
                 "prize": prize,
@@ -211,6 +211,9 @@ def prize_parser(excel_directory):
         session.add(tables.Prize(**data.dict()))
         session.commit()
         session.close()
+
+    if not os.path.exists(excel_directory):
+        raise FileNotFoundError("Отсутствует файл премии")
 
     _excel_directory = excel_directory
 
@@ -431,6 +434,9 @@ def report_parser(excel_path):
         session.commit()
         session.close()
 
+    if not os.path.exists(excel_path):
+        raise FileNotFoundError("Отсутствует файл отчетов")
+
     _excel_path = excel_path
 
     now = datetime.now()
@@ -447,13 +453,13 @@ def parser(excel_directory, excel_path, deelay=10):
             prize_parser(excel_directory)
             logger.info("successful update prize")
         except Exception as err:
-            logger.error(str(err))
+            logger.error("Ошибка обновления премии " + str(err))
 
         try:
             report_parser(excel_path)
             logger.info("successful update reports")
         except Exception as err:
-            logger.error(str(err))
+            logger.error("Ошибка обновления отчетов " + str(err))
 
         time.sleep(deelay)
 
