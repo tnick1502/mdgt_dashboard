@@ -445,16 +445,17 @@ def parser(excel_directory, excel_path, deelay=10):
     while True:
         try:
             prize_parser(excel_directory)
+            logger.info("successful update prize")
         except Exception as err:
             logger.error(str(err))
 
         try:
             report_parser(excel_path)
+            logger.info("successful update reports")
         except Exception as err:
             logger.error(str(err))
 
         time.sleep(deelay)
-        logger.info("update db")
 
 
 if __name__ == "__main__":
