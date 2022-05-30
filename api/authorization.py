@@ -13,10 +13,12 @@ router = APIRouter(
 
 @router.post('/sign-up/', response_model=Token, status_code=status.HTTP_201_CREATED)
 def sign_up(user_data: UserCreate, auth_service: AuthService = Depends()):
+    """Регисртрация нового пользователя и сразу получение токена"""
     return auth_service.register_new_user(user_data)
 
 @router.post('/sign-in/')
 def sign_in(auth_data: OAuth2PasswordRequestForm = Depends(), auth_service: AuthService = Depends()):
+    """Получение токена (токен зранится в куки)"""
     token = auth_service.authenticate_user(auth_data.username, auth_data.password)
     content = {"message": "True"}
     response = JSONResponse(content=content)
@@ -27,12 +29,14 @@ def sign_in(auth_data: OAuth2PasswordRequestForm = Depends(), auth_service: Auth
 
 @router.get('/user/', response_model=User)
 def get_user(user: User = Depends(get_current_user)):
+    """Просмотр авторизованного пользователя"""
     return user
 
 
 @router.get("/sign-out/")
 def rsign_out_and_remove_cookie():
-    response = RedirectResponse(url="/")
+    """Удаление токена авторизации из куки"""
+    response = JSONResponse()
     response.delete_cookie("Authorization", domain="localhost")
     return response
 

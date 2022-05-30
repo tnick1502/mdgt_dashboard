@@ -33,14 +33,11 @@ class OAuth2PasswordBearerWithCookie(OAuth2):
 
         scheme, param = get_authorization_scheme_param(authorization)
         if not authorization or scheme.lower() != "bearer":
-            if self.auto_error:
-                raise HTTPException(
-                    status_code=status.HTTP_401_UNAUTHORIZED,
-                    detail="Not authenticated",
-                    headers={"WWW-Authenticate": "Bearer"},
-                )
-            else:
-                return None
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Token is wrong or missing",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
 
         return param
 
@@ -108,23 +105,31 @@ class AuthService:
     def __init__(self, session: Session = Depends(get_session)):
         self.session = session
 
-    def register_new_user(
-        self,
-        user_data: UserCreate,
-    ) -> Token:
+    def register_new_user(self, user_data: UserCreate) -> Token:
+        user_names = (
+            self.session
+                .query(tables.User)
+                .filter(tables.User.username == user_data.username)
+                .first()
+        )
+
+        if user_names:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEND,
+                detail="This name is already exist",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+
         user = tables.User(
             username=user_data.username,
             password_hash=self.hash_password(user_data.password),
         )
+
         self.session.add(user)
         self.session.commit()
         return self.create_token(user)
 
-    def authenticate_user(
-        self,
-        username: str,
-        password: str,
-    ) -> Token:
+    def authenticate_user(self, username: str, password: str) -> Token:
         exception = HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail='Incorrect username or password',

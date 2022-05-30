@@ -14,9 +14,11 @@ router = APIRouter(
 
 @router.get("/", response_model=list)
 def get_pays(service: PayService = Depends(), user: User = Depends(get_current_user)):
+    """Расчет выплат сотрудникам за все месяцы"""
     return service.get_pay()
 
 
 @router.get("/{date}", response_model=dict)
 def get_pay(date: Optional[date], service: PayService = Depends(), user: User = Depends(get_current_user)):
+    """Расчет выплат сотрудникам за вконкретный месяц. Всегда используется 25 число месяца"""
     return service.get_one_pay(date)
