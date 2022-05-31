@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, status, Response, HTTPException
+from fastapi import APIRouter, Depends, status, Response, HTTPException, Request
 from fastapi.responses import JSONResponse
 from fastapi.responses import RedirectResponse
 from models.authorization import UserCreate, Token, User
@@ -34,9 +34,12 @@ def get_user(user: User = Depends(get_current_user)):
 
 
 @router.get("/sign-out/")
-def rsign_out_and_remove_cookie():
-    """Удаление токена авторизации из куки"""
-    response = JSONResponse()
-    response.delete_cookie("Authorization", domain="localhost")
+def sign_out_and_remove_cookie(current_user: User = Depends(get_current_user)):
+    # Also tried following two comment lines
+    # response.set_cookie(key="access_token", value="", max_age=1)
+    # response.delete_cookie("access_token", domain="localhost")
+    content = {"message": "Tocken closed"}
+    response = JSONResponse(content=content)
+    response.delete_cookie("Authorization")
     return response
 
