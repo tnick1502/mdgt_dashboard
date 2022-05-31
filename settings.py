@@ -1,5 +1,13 @@
 from pydantic import BaseSettings
 import os
+from sys import platform
+
+if platform == "linux" or platform == "linux2":
+    statment_path = "/run/user/1000/gvfs/smb-share:server=192.168.0.1,share=files/МДГТ - (Учет рабоч. времени, Отпуск, Даты рожд., телефоны, план работ)/ПРОТОКОЛЫ+ведомости.xls"
+    prize_dir = "/run/user/1000/gvfs/smb-share:server=192.168.0.1,share=files/МДГТ - (Учет рабоч. времени, Отпуск, Даты рожд., телефоны, план работ)/УЧЕТ рабочего времени/"
+elif platform == "win32":
+    statment_path = "//192.168.0.1/files/МДГТ - (Учет рабоч. времени, Отпуск, Даты рожд., телефоны, план работ)/ПРОТОКОЛЫ+ведомости.xls"
+    prize_dir = "//192.168.0.1/files/МДГТ - (Учет рабоч. времени, Отпуск, Даты рожд., телефоны, план работ)/УЧЕТ рабочего времени/"
 
 class Settings(BaseSettings):
     server_host: str = "127.0.0.1"
