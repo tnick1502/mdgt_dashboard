@@ -10,3 +10,4 @@ services/.idea
 services/__pycache__
 db/.idea
 db/__pycache__
+db/database.sqlite3

@@ -1,1 +1,1 @@
-from background_tasks.tasks import parser
+from background_tasks.tasks import parser, update_db, create_admin

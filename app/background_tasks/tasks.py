@@ -1,6 +1,8 @@
 import re
 from dataclasses import dataclass
 from datetime import datetime, date, timedelta
+from dateutil import rrule
+from passlib.hash import bcrypt
 from pydantic import ValidationError
 import os
 from db.database import Session
@@ -477,6 +479,57 @@ def parser(excel_directory, excel_path, date_delay=3, deelay=10):
             logger.error("Ошибка обновления отчетов " + str(err))
 
         time.sleep(deelay)
+
+def update_db(excel_directory, excel_path):
+
+    if not os.path.exists(excel_directory):
+        raise FileNotFoundError("Отсутствует файл премии")
+
+    if not os.path.exists(excel_path):
+        raise FileNotFoundError("Отсутствует файл отчетов")
+
+    reports_dates = [
+        date(year=dt.year, month=dt.month, day=25) for dt in rrule.rrule(
+            rrule.MONTHLY, dtstart=date(2022, 1, 1), until=date.today()
+        )]
+
+    prize_dates = [
+        date(year=dt.year, month=dt.month, day=25) for dt in rrule.rrule(
+            rrule.MONTHLY, dtstart=date(2020, 5, 1), until=date.today()
+        )]
+
+    for d_p in prize_dates:
+        try:
+            prize_parser(excel_directory, d_p)
+            logger.info(f"load prize {d_p} id db")
+        except Exception as err:
+            logger.error("Ошибка обновления премии " + str(err))
+
+    for d_r in reports_dates:
+        try:
+            report_parser(excel_path, d_r)
+            logger.info(f"load reports {d_p} id db")
+        except Exception as err:
+            logger.error("Ошибка обновления отчетов " + str(err))
+
+def create_admin():
+    session = Session()
+    user = session.query(tables.User).filter_by(username="mdgt").first()
+    session.close()
+
+    if not user:
+        session = Session()
+
+        user = tables.User(
+            username="mdgt",
+            password_hash=bcrypt.hash("mdgt"),
+        )
+
+        session.add(user)
+        session.commit()
+        session.close()
+
+
 
 
 if __name__ == "__main__":

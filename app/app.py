@@ -1,6 +1,10 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from api import router
+from background_tasks import create_admin, update_db
+from db.tables import Base
+from db.database import engine
+from settings import settings
 
 app = FastAPI(
     title="DashBoard MDGT",
@@ -23,3 +27,9 @@ app.add_middleware(
 )
 
 app.include_router(router)
+
+@app.on_event("startup")
+def startup_event():
+    Base.metadata.create_all(engine)
+    create_admin()
+    update_db(settings.prize_directory, settings.statment_excel_path)
