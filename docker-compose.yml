@@ -1,0 +1,10 @@
+version: '3.0'
+
+services:
+  mdgt_dashboard:
+    build: .
+    restart: always
+    volumes:
+      - .:/code
+    ports:
+      - 8001:8001

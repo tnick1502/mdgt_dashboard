@@ -1,6 +1,7 @@
 import re
 from dataclasses import dataclass
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
+from pydantic import ValidationError
 import os
 from db.database import Session
 from typing import Dict
@@ -142,13 +143,10 @@ class XlsBook:
     def __get_color(self, color_index: int):
         return self.book.colour_map.get(color_index)
 
-def prize_parser(excel_directory):
-    def actual_date():
-        now = datetime.now()
-        return date(year=now.year, month=now.month, day=25)
+def prize_parser(excel_directory: str, current_date: date = date.today()):
 
-    def get_current_prize(excel_directory):
-        mounth, year = datetime.now().strftime('%m'), "20" + datetime.now().strftime('%y')
+    def get_current_prize(excel_directory, current_date):
+        mounth, year = current_date.strftime('%m'), "20" + current_date.strftime('%y')
 
         try:
             path = os.path.join(
@@ -174,12 +172,12 @@ def prize_parser(excel_directory):
 
         return prize
 
-    def update_run(excel_dir, base_prize):
-        prize = get_current_prize(excel_dir)
+    def update_run(excel_dir, base_prize, current_date):
+        prize = get_current_prize(excel_dir, current_date)
 
         if prize > base_prize:
             data = {
-                "date": actual_date(),
+                "date": date(year=current_date.year, month=current_date.month, day=25),
                 "prize": prize,
             }
 
@@ -217,16 +215,16 @@ def prize_parser(excel_directory):
 
     _excel_directory = excel_directory
 
-    base_prize = _get(date=actual_date())
+    base_prize = _get(date(year=current_date.year, month=current_date.month, day=25))
 
     if not base_prize:
         _prize = 0.0
     else:
         _prize = base_prize.prize
 
-    update_run(_excel_directory, _prize)
+    update_run(_excel_directory, _prize, current_date)
 
-def report_parser(excel_path):
+def report_parser(excel_path: str, current_date: date = date.today()):
 
     def get_month_count(main_data, date: datetime):
         result: Dict = {}
@@ -244,27 +242,27 @@ def report_parser(excel_path):
 
         return result
 
-    def update_reports(statment_data, base_report_data):
-        now = datetime.now()
-        res = get_month_count(statment_data, datetime(year=now.year, month=now.month, day=1))
-        res["python_all"] = res['python_report'] + res['python_compression_report'] + res['python_dynamic_report']
-        all = res["python_all"] + res['mathcad_report']
-        res["date"] = date(year=now.year, month=now.month, day=25)
-        if all:
-            res["python_percent"] = round((res["python_all"] / all) * 100, 2)
-        else:
-            res["python_percent"] = 0.0
-
-        if base_report_data.dict() != res:
-
-            rep_data = Report(**res)
-
-            test = _get(date=rep_data.date)
-
-            if test is not None:
-                update(data=rep_data)
+    def update_reports(statment_data, base_report_data, current_date):
+        res = get_month_count(statment_data, datetime(year=current_date.year, month=current_date.month, day=1))
+        if res:
+            res["python_all"] = res['python_report'] + res['python_compression_report'] + res['python_dynamic_report']
+            all = res["python_all"] + res['mathcad_report']
+            res["date"] = date(year=current_date.year, month=current_date.month, day=25)
+            if all:
+                res["python_percent"] = round((res["python_all"] / all) * 100, 2)
             else:
-                create(data=rep_data)
+                res["python_percent"] = 0.0
+
+            if base_report_data.dict() != res:
+
+                rep_data = Report(**res)
+
+                test = _get(date=rep_data.date)
+
+                if test is not None:
+                    update(data=rep_data)
+                else:
+                    create(data=rep_data)
 
     def read_excel_statment(path: str) -> 'ReportParser.data':
         __result: 'ReportParser.data' = {}
@@ -439,24 +437,41 @@ def report_parser(excel_path):
 
     _excel_path = excel_path
 
-    now = datetime.now()
-    base_report_data = _get(date(year=now.year, month=now.month, day=25))
-    base_report_data = Report.from_orm(base_report_data)
+    base_report_data = _get(date(year=current_date.year, month=current_date.month, day=25))
+
+    if not base_report_data:
+        base_report_data = Report.parse_obj(
+            {
+                "date": -1,
+                "python_report": -1,
+                "python_dynamic_report": -1,
+                "python_compression_report": -1,
+                "mathcad_report": -1,
+                "physical_statement":  -1,
+                "mechanics_statement": -1,
+                "python_all": -1,
+                "python_percent": -1,
+            }
+        )
+    else:
+        base_report_data = Report.from_orm(base_report_data)
+
     statment_data = read_excel_statment(excel_path)
-    update_reports(statment_data, base_report_data)
+    update_reports(statment_data, base_report_data, current_date)
 
 
 #@dramatiq.actor
-def parser(excel_directory, excel_path, deelay=10):
+def parser(excel_directory, excel_path, date_delay=3, deelay=10):
     while True:
+        current_date = date.today() - timedelta(days=date_delay)
         try:
-            prize_parser(excel_directory)
+            prize_parser(excel_directory, current_date)
             logger.info("successful update prize")
         except Exception as err:
             logger.error("Ошибка обновления премии " + str(err))
 
         try:
-            report_parser(excel_path)
+            report_parser(excel_path, current_date)
             logger.info("successful update reports")
         except Exception as err:
             logger.error("Ошибка обновления отчетов " + str(err))
@@ -466,6 +481,6 @@ def parser(excel_directory, excel_path, deelay=10):
 
 if __name__ == "__main__":
     from settings import settings
-    parser(settings.prize_directory, settings.statment_excel_path)
-    #report_parser(settings.statment_excel_path)
+    #parser(settings.prize_directory, settings.statment_excel_path)
+    report_parser(settings.statment_excel_path)
     #prize_parser(settings.prize_directory)

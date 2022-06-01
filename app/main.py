@@ -8,7 +8,7 @@ if __name__ == "__main__":
 
     parser_thread = Thread(
         target=parser,
-        args=(settings.prize_directory, settings.statment_excel_path, 600),
+        args=(settings.prize_directory, settings.statment_excel_path, 3, 600),
         daemon=True,
     ).start()
 
