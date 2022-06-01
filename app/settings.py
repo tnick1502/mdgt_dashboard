@@ -6,13 +6,13 @@ if platform == "win32":
     statment_path = "//192.168.0.1/files/МДГТ - (Учет рабоч. времени, Отпуск, Даты рожд., телефоны, план работ)/ПРОТОКОЛЫ+ведомости.xls"
     prize_dir = "//192.168.0.1/files/МДГТ - (Учет рабоч. времени, Отпуск, Даты рожд., телефоны, план работ)/УЧЕТ рабочего времени/"
 else:
-    statment_path = "/run/user/1000/gvfs/smb-share:server=192.168.0.1,share=files/МДГТ - (Учет рабоч. времени, Отпуск, Даты рожд., телефоны, план работ)/ПРОТОКОЛЫ+ведомости.xls"
+    statment_path = "/run/user/1000/gvfs/smb-share:server=192.168.0.1,share=files/МДГТ - (Учет рабоч. времени, Отпуск, Даты рожд., телефоны, план работ)/"
     prize_dir = "/run/user/1000/gvfs/smb-share:server=192.168.0.1,share=files/МДГТ - (Учет рабоч. времени, Отпуск, Даты рожд., телефоны, план работ)/УЧЕТ рабочего времени/"
 
 class Settings(BaseSettings):
     server_host: str = "127.0.0.1"
     server_port: int = 8001
-    statment_excel_path: str = os.path.normpath(statment_path)
+    statment_excel_path: str = os.path.normpath(os.path.join(statment_path, "ПРОТОКОЛЫ+ведомости.xls"))
     prize_directory: str = os.path.normcase(prize_dir)
     database_url: str = "sqlite:///./db/database.sqlite3"
 

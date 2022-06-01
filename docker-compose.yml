@@ -1,10 +1,14 @@
-version: '3.0'
+version: '3.1'
 
 services:
   mdgt_dashboard:
-    build: .
-    restart: always
-    volumes:
-      - .:/code
+    build: ./
+    container_name: mdgt_dashboard
     ports:
       - 8001:8001
+    restart: always
+    links:
+      - mysql:db
+    volumes:
+      - /run/user/1000/gvfs/smb-share:server=192.168.0.1,share=files/МДГТ - (Учет рабоч. времени, Отпуск, Даты рожд., телефоны, план работ):./reports
+      - /run/user/1000/gvfs/smb-share:server=192.168.0.1,share=files/МДГТ - (Учет рабоч. времени, Отпуск, Даты рожд., телефоны, план работ)/УЧЕТ рабочего времени:./prize
