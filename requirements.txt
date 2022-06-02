@@ -23,5 +23,6 @@ passlib==1.7.4
 xlrd==2.0.1
 bcrypt==3.2.2
 dateutils==0.6.12
+tqdm==4.64.0
 
 

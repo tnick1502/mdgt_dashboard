@@ -15,6 +15,7 @@ import time
 from models.reports import Report
 from models.prizes import Prize
 import db.tables as tables
+from tqdm import tqdm
 
 @dataclass
 class Unit:
@@ -463,18 +464,21 @@ def report_parser(excel_path: str, current_date: date = date.today()):
 
 
 #@dramatiq.actor
-def parser(excel_directory, excel_path, date_delay=3, deelay=10):
+def parser(excel_directory, excel_path, date_delay=3, deelay=10, print=True):
+    time.sleep(deelay)
     while True:
         current_date = date.today() - timedelta(days=date_delay)
         try:
             prize_parser(excel_directory, current_date)
-            logger.info("successful update prize")
+            if print:
+                logger.info("successful update prize")
         except Exception as err:
             logger.error("Ошибка обновления премии " + str(err))
 
         try:
             report_parser(excel_path, current_date)
-            logger.info("successful update reports")
+            if print:
+                logger.info("successful update reports")
         except Exception as err:
             logger.error("Ошибка обновления отчетов " + str(err))
 
@@ -498,17 +502,17 @@ def update_db(excel_directory, excel_path):
             rrule.MONTHLY, dtstart=date(2020, 5, 1), until=date.today()
         )]
 
-    for d_p in prize_dates:
+    for d_p in tqdm(prize_dates):
         try:
             prize_parser(excel_directory, d_p)
-            logger.info(f"load prize {d_p} id db")
+            #logger.info(f"load prize {d_p} id db")
         except Exception as err:
             logger.error("Ошибка обновления премии " + str(err))
 
-    for d_r in reports_dates:
+    for d_r in tqdm(reports_dates):
         try:
             report_parser(excel_path, d_r)
-            logger.info(f"load reports {d_p} id db")
+            #logger.info(f"load reports {d_p} id db")
         except Exception as err:
             logger.error("Ошибка обновления отчетов " + str(err))
 

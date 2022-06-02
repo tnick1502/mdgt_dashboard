@@ -6,9 +6,11 @@
 
 Установка:
 
-1. Скопируйте репозиторий: 
-    git clone https://github.com/tnick1502/mdgt_dashboard.git
-2. Установите зависимости: 
-    pip instal -r requirements.txt
-3. Запустите программу:
-    python main.py
+1. Для работы нужно прикрепить диск Z к папке на компьютере с помошью команды: 
+    sudo mount.cifs //192.168.0.1/files YOUR_PATH -o user=v.antonij,pass=eHar4Er9
+2. Можно запустить через контейнер:
+    docker build -t mdgt_dashboard .
+    docker run -v YOUR_PATH:/files -p 8000:8000 mdgt_dashboard
+3. Или через docker-compose:
+    docker-compose up
+
