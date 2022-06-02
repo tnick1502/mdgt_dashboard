@@ -2,7 +2,7 @@ FROM python:3
 
 WORKDIR /code/app
 
-EXPOSE 8001
+EXPOSE 8000
 
 COPY ./requirements.txt /code/requirements.txt
 

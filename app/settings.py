@@ -15,7 +15,7 @@ prize_dir = "/files/МДГТ - (Учет рабоч. времени, Отпус�
 
 
 class Settings(BaseSettings):
-    server_host: str = "127.0.0.1"
+    server_host: str = "0.0.0.0"
     server_port: int = 8000
     statment_excel_path: str = os.path.normpath(statment_path)
     prize_directory: str = os.path.normcase(prize_dir)
