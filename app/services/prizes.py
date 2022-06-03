@@ -18,7 +18,7 @@ class PrizesService:
         return prize
 
     def get_all(self) -> List[tables.Prize]:
-        prizes = self.session.query(tables.Prize).all()
+        prizes = self.session.query(tables.Prize).order_by(tables.Prize.date).all()
         return prizes
 
     def get(self, date: date) -> tables.Prize:

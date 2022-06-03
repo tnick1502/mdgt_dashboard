@@ -18,7 +18,7 @@ class ReportsService:
         return report
 
     def get_all(self) -> List[tables.Report]:
-        reports = self.session.query(tables.Report).all()
+        reports = self.session.query(tables.Report).order_by(tables.Report.date).all()
         return reports
 
     def get(self, date: date) -> tables.Report:

@@ -34,7 +34,7 @@ def update_report(date: date, report_data: Report, service: ReportsService = Dep
 
 
 @router.delete('/{date}', status_code=status.HTTP_204_NO_CONTENT)
-def delete_operation(date: date, service: ReportsService = Depends()):
+def delete_report(date: date, service: ReportsService = Depends()):
     """Удаление записи в базе премии. Всегда 25 число"""
     service.delete(date=date)
     return Response(status_code=status.HTTP_204_NO_CONTENT)
