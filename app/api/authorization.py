@@ -22,7 +22,7 @@ def sign_in(auth_data: OAuth2PasswordRequestForm = Depends(), auth_service: Auth
     token = auth_service.authenticate_user(auth_data.username, auth_data.password)
     content = {"message": "True"}
     response = JSONResponse(content=content)
-    response.set_cookie("Authorization", value=f"Bearer {token.access_token}", httponly=True)
+    response.set_cookie("Authorization", value=f"Bearer {token.access_token}", samesite=None)#, httponly=True)
 
     return response
 
