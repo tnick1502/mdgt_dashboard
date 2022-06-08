@@ -1,0 +1,24 @@
+.notfound {
+	display: flex;
+	flex-direction: column;
+
+	align-items: center;
+	justify-content: center;
+
+	font-size: var(--big-font-size);
+
+	color: var(--title-color);
+}
+
+.notfound div {
+	text-align: center;
+}
+
+.notfound div:first-child {
+	font-size: calc(var(--big-font-size) + 2rem);
+}
+
+.notfound div:last-child {
+	font-size: var(--h3-font-size);
+	color: var(--text-color);
+}

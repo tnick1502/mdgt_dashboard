@@ -1,0 +1,109 @@
+:root {
+	--form-item-width: 220px;
+}
+
+.login-wrapper {
+	height: fit-content;
+
+	padding: 0.5rem 0;
+	width: 100%;
+
+	display: inline-flex;
+	align-items: center;
+	justify-content: flex-end;
+}
+
+.login-form {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+
+	column-gap: var(--col-gap);
+
+	height: fit-content;
+	min-height: var(--login-height);
+
+	margin-right: var(--mb-1-5);
+	margin-left: var(--mb-1-5);
+}
+
+.form-item,
+.login-user {
+	height: var(--login-height);
+	width: var(--form-item-width);
+
+	border: 1px solid white;
+	border-radius: 0.5rem;
+
+	outline: 0;
+
+	padding: 0.25rem 0.5rem;
+
+	box-shadow: 1px 1px 4px hsla(var(--hue), 24%, 15%, 0.1),
+		-1px -1px 4px hsla(var(--hue), 24%, 15%, 0.1);
+}
+
+.form-submit,
+.login-logout {
+	height: var(--login-height);
+	padding: 0.5rem 1rem;
+
+	border-radius: 0.5rem;
+	box-shadow: 1px 1px 4px hsla(var(--hue), 24%, 15%, 0.1),
+		-1px -1px 4px hsla(var(--hue), 24%, 15%, 0.1);
+}
+
+.form-submit {
+	background-color: var(--first-color);
+	color: var(--container-color);
+	font-size: var(--normal-font-size);
+	font-weight: var(--font-semi-bold);
+
+	width: 90px;
+}
+
+.form-submit:hover {
+	background-color: var(--first-color-alt);
+	box-shadow: 3px 3px 4px hsla(var(--hue), 24%, 15%, 0.1),
+		-3px -3px 4px hsla(var(--hue), 24%, 15%, 0.1);
+}
+
+.login-logout {
+	background-color: var(--first-color-lighten);
+	color: var(--first-color);
+	font-size: var(--font-medium);
+}
+
+.login-logout:hover {
+	background-color: var(--first-color-light);
+	box-shadow: 3px 3px 4px hsla(var(--hue), 24%, 15%, 0.1),
+		-3px -3px 4px hsla(var(--hue), 24%, 15%, 0.1);
+	color: var(--container-color);
+}
+
+.login-user {
+	display: inline-flex;
+	align-items: center;
+	min-width: var(--form-item-width);
+}
+
+.login-err {
+	border: 1px solid var(--color-bad-info) !important;
+}
+
+@media screen and (max-width: 769px) {
+	.login-form {
+		flex-wrap: wrap;
+		row-gap: 0.5rem;
+		justify-content: flex-end;
+	}
+}
+
+@media screen and (max-width: 498px) {
+	.login-form {
+		flex-direction: column;
+		flex-wrap: nowrap;
+		justify-content: center;
+		align-items: flex-end;
+	}
+}

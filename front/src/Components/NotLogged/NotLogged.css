@@ -1,0 +1,14 @@
+.notlogged {
+	display: flex;
+	flex-direction: column;
+
+	align-items: center;
+	justify-content: center;
+
+	font-size: var(--h3-font-size);
+	color: var(--text-color);
+}
+
+.notlogged div {
+	text-align: center;
+}

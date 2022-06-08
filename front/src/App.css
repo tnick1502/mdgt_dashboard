@@ -1,0 +1,25 @@
+.content-wrapper {
+	min-height: 100vh;
+	max-width: var(--app-max-width);
+	margin: 0 auto;
+	padding: 0 0.25rem;
+
+	display: grid;
+	row-gap: var(--row-gap);
+	grid-template-rows: min-content auto min-content;
+}
+
+.content {
+	display: grid;
+	column-gap: var(--col-gap);
+	grid-template-columns: min-content 1fr;
+}
+
+.footer__copy {
+	height: var(--mb-1-5);
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	font-size: var(--smaller-font-size);
+	color: var(--text-color);
+}

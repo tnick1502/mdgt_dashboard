@@ -1,0 +1,15 @@
+.payments-grid {
+	grid-template-rows: min-content auto;
+}
+
+.display-cards-wrapper_payments {
+	display: flex;
+	flex-wrap: wrap;
+
+	row-gap: var(--row-gap);
+	column-gap: var(--col-gap);
+}
+
+.chart-card_payments {
+	min-height: 30vh !important;
+}
