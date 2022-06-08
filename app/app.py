@@ -5,21 +5,26 @@ from background_tasks import create_admin, update_db
 from db.tables import Base
 from db.database import engine
 from settings import settings
-from fastapi.responses import HTMLResponse
-from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 
 app = FastAPI(
     title="DashBoard MDGT",
     description="Отображение показателей работы компании",
-    version="1.0.0")
+    version="1.0.0",
+    allow_methods=["GET", "POST", "HEAD", "OPTIONS"],
+    allow_headers=["Access-Control-Allow-Headers", 'Content-Type', 'Authorization', 'Access-Control-Allow-Origin'],
+)
 
 
 origins = [
     "http://localhost:3000",
+    "http://localhost:8000",
     "http://localhost:8080",
-    "http://192.168.0.41:3000/"
+    "http://192.168.0.41:3000",
+    'http://192.168.0.200:3000',
+    'http://192.168.0.200:3000',
+    "http://192.168.0.41",
     "localhost:3000"]
 
 
@@ -27,8 +32,11 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"])
+    allow_methods=["GET", "POST", "HEAD", "OPTIONS"],
+    allow_headers=["Access-Control-Allow-Headers",
+                   'Content-Type',
+                   'Authorization',
+                   'Access-Control-Allow-Origin'])
 
 
 app.include_router(router)
