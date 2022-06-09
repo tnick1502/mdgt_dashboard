@@ -114,7 +114,7 @@ export default function Navigation() {
 
 			<Routes>
 				<Route path="/" element={<Summary />} />
-				<Route path="/prize" element={<Prize />} />
+				<Route path="/Prize" element={<Prize />} />
 				<Route path="/Reports" element={<Reports />} />
 				<Route path="/Payments" element={<Payments />} />
 

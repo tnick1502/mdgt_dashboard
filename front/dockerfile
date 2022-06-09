@@ -13,6 +13,8 @@ COPY . .
 
 RUN npm run build
 
+COPY nginx.conf /etc/nginx/nginx.conf
+
 RUN rm -r /usr/share/nginx/html/*
 
 RUN cp -a build/. /usr/share/nginx/html
