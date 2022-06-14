@@ -43,21 +43,20 @@
 		-1px -1px 4px hsla(var(--hue), 24%, 15%, 0.1);
 }
 
-.form-submit,
-.login-logout {
+.form-submit {
 	height: var(--login-height);
 	padding: 0.5rem 1rem;
 
 	border-radius: 0.5rem;
-	box-shadow: 1px 1px 4px hsla(var(--hue), 24%, 15%, 0.1),
-		-1px -1px 4px hsla(var(--hue), 24%, 15%, 0.1);
+	/* box-shadow: 1px 1px 4px hsla(var(--hue), 24%, 15%, 0.1),
+		-1px -1px 4px hsla(var(--hue), 24%, 15%, 0.1); */
 }
 
 .form-submit {
 	background-color: var(--first-color);
 	color: var(--container-color);
 	font-size: var(--normal-font-size);
-	font-weight: var(--font-semi-bold);
+	/* font-weight: var(--font-semi-bold); */
 
 	width: 90px;
 }
@@ -68,17 +67,9 @@
 		-3px -3px 4px hsla(var(--hue), 24%, 15%, 0.1);
 }
 
-.login-logout {
-	background-color: var(--first-color-lighten);
-	color: var(--first-color);
-	font-size: var(--font-medium);
-}
-
-.login-logout:hover {
-	background-color: var(--first-color-light);
+.form-submit:focus {
 	box-shadow: 3px 3px 4px hsla(var(--hue), 24%, 15%, 0.1),
 		-3px -3px 4px hsla(var(--hue), 24%, 15%, 0.1);
-	color: var(--container-color);
 }
 
 .login-user {

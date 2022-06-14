@@ -160,7 +160,7 @@ img {
 	display: grid;
 	grid-template-columns: 100%;
 
-	row-gap: 1rem;
+	/* row-gap: 1rem; */
 
 	padding: 1.15rem 1.15rem 0 1.15rem;
 }
@@ -208,4 +208,13 @@ img {
 	.chart-card {
 		padding: 0rem 0.5rem 0 0.5rem;
 	}
+}
+
+::-webkit-scrollbar {
+	width: 0.7rem;
+	background: hsl(var(--hue), 4%, 53%);
+}
+
+::-webkit-scrollbar-thumb {
+	background: hsl(var(--hue), 4%, 29%);
 }

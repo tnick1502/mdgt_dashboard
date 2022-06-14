@@ -23,3 +23,12 @@
 	font-size: var(--smaller-font-size);
 	color: var(--text-color);
 }
+
+::-webkit-scrollbar {
+	width: 0.7rem;
+	background: hsl(var(--hue), 4%, 53%);
+}
+
+::-webkit-scrollbar-thumb {
+	background: hsl(var(--hue), 4%, 29%);
+}

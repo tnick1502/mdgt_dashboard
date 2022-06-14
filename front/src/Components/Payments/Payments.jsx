@@ -10,14 +10,14 @@ import PaymentsChart from './PaymentsChart'
 import { parsePayments } from '../utils'
 
 export default function Payments({ toSummary }) {
-	const { isLogged, api } = useContext(Context)
+	const { isLogged, api, setLogged } = useContext(Context)
 
 	const [payments, setPayments] = useState({ payments: [], dates: [] })
 	const [paymentsLoaded, setPaymentsLoaded] = useState(false)
 
 	useEffect(() => {
-		const instance2 = axios.create()
-		instance2.interceptors.request.use(
+		const paymentsRequestor = axios.create()
+		paymentsRequestor.interceptors.request.use(
 			(config) => {
 				// Код, необходимый до отправки запроса
 				config.method = 'get'
@@ -29,17 +29,30 @@ export default function Payments({ toSummary }) {
 				return Promise.reject(error)
 			}
 		)
-
-		function updatePayments() {
-			if (isLogged) {
-				instance2
-					.get(`${api}pay/`)
-					.then((response) => response.data)
-					.then((data) => {
+		paymentsRequestor.interceptors.response.use(
+			function(response) {
+				if (response.status === 200) {
+					const data = response.data
+					if (data) {
 						const resultData = parsePayments(data)
 						setPayments(resultData)
 						setPaymentsLoaded(true)
-					})
+					}
+				}
+				return response
+			},
+			function(error) {
+				// Do something with response error
+				if (error.response.status === 401) {
+					setLogged(false)
+				}
+				return { data: null }
+			}
+		)
+
+		function updatePayments() {
+			if (isLogged) {
+				paymentsRequestor.get(`${api}pay/`)
 			}
 		}
 

@@ -42,8 +42,6 @@ export default function LogInBar() {
 		(config) => {
 			// Код, необходимый до отправки запроса
 			config.method = 'get'
-			config.headers['Access-Control-Allow-Origin'] =
-				'http://192.168.0.41:3000/'
 			config.withCredentials = true
 			return config
 		},
@@ -149,7 +147,7 @@ export default function LogInBar() {
 					<div className="login-form">
 						<div className="login-user unselectable">{userName}</div>
 						<button onClick={onLogOutBtn} className="form-submit">
-							Выйти
+							ВЫЙТИ
 						</button>
 					</div>
 				) : (
@@ -172,7 +170,7 @@ export default function LogInBar() {
 							placeholder="Пароль"
 						/>
 						<button type="submit" className="form-submit">
-							Войти
+							ВОЙТИ
 						</button>
 					</form>
 				)}
