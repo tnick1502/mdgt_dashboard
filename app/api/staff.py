@@ -28,13 +28,13 @@ def create_staff(staff_data: StaffCreate, service: StaffService = Depends()):
     return service.create(staff_data=staff_data)
 
 
-@router.put('/{id}', response_model=Staff)
+@router.put('/', response_model=Staff)
 def update_staff(id: int, staff_data: StaffCreate, service: StaffService = Depends()):
     """Обновление данных сотрудника"""
     return service.update(id=id, staff_data=staff_data)
 
 
-@router.delete('/{id}', status_code=status.HTTP_204_NO_CONTENT)
+@router.delete('/', status_code=status.HTTP_204_NO_CONTENT)
 def delete_staff(id: int, service: StaffService = Depends()):
     """Удаление сотрудника"""
     service.delete(id=id)

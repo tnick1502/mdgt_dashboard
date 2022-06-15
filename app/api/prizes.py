@@ -28,13 +28,13 @@ def create_prize(prize_data: Prize, service: PrizesService = Depends()):
     return service.create(prize_data=prize_data)
 
 
-@router.put('/{date}', response_model=Prize)
+@router.put('/', response_model=Prize)
 def update_prize(date: date, prize_data: Prize, service: PrizesService = Depends()):
     """Обновление записи в базе премии. Всегда 25 число"""
     return service.update(date=date, prize_data=prize_data)
 
 
-@router.delete('/{date}', status_code=status.HTTP_204_NO_CONTENT)
+@router.delete('/', status_code=status.HTTP_204_NO_CONTENT)
 def delete_prize(date: date, service: PrizesService = Depends()):
     """Удаление записи в базе премии. Всегда 25 число"""
     service.delete(date=date)

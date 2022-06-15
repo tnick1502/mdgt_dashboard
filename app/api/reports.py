@@ -27,13 +27,13 @@ def create_reports(report_data: ReportCreate, service: ReportsService = Depends(
     return service.create(report_data=report_data)
 
 
-@router.put('/{date}', response_model=Report)
+@router.put('/', response_model=Report)
 def update_report(date: date, report_data: Report, service: ReportsService = Depends()):
     """Обновление записи в базе премии. Всегда 25 число"""
     return service.update(date=date, report_data=report_data)
 
 
-@router.delete('/{date}', status_code=status.HTTP_204_NO_CONTENT)
+@router.delete('/', status_code=status.HTTP_204_NO_CONTENT)
 def delete_report(date: date, service: ReportsService = Depends()):
     """Удаление записи в базе премии. Всегда 25 число"""
     service.delete(date=date)
