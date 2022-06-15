@@ -1,13 +1,5 @@
 venv
 .env
-.idea
-__pycache__
-api/.idea
-api/__pycache__
-models/.idea
-models/__pycache__
-services/.idea
-services/__pycache__
-db/.idea
-db/__pycache__
+**/.idea
+**/__pycache__
 db/database.sqlite3

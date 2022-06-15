@@ -32,3 +32,12 @@ class Prize(Base):
 
     date = Column(Date, primary_key=True)
     prize = Column(Float)
+
+
+class Staff(Base):
+    __tablename__ = 'staff'
+
+    id = Column(Integer, primary_key=True)
+    full_name = Column(String)
+    phone = Column(String)
+    birthday = Column(Date)

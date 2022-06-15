@@ -4,6 +4,7 @@ from datetime import datetime, date, timedelta
 from dateutil import rrule
 from passlib.hash import bcrypt
 from pydantic import ValidationError
+import openpyexcel
 import os
 from db.database import Session
 from typing import Dict
@@ -463,7 +464,6 @@ def report_parser(excel_path: str, current_date: date = date.today()):
     update_reports(statment_data, base_report_data, current_date)
 
 
-#@dramatiq.actor
 def parser(excel_directory, excel_path, date_delay=3, deelay=10, print=True):
     time.sleep(deelay)
     while True:
@@ -515,6 +515,32 @@ def update_db(excel_directory, excel_path):
             #logger.info(f"load reports {d_p} id db")
         except Exception as err:
             logger.error("Ошибка обновления отчетов " + str(err))
+
+    try:
+
+        wb = openpyexcel.load_workbook("db/HappyDay.xlsx")
+        for i in tqdm(range(2, 200)):
+            name = wb["Лист1"]['C' + str(i)].value
+            if name is not None:
+                birthday = wb["Лист1"]['D' + str(i)].value
+                phone_number = "7" + wb["Лист1"]['F' + str(i)].value.replace("-", " ") if wb["Лист1"]['F' + str(i)].value is not None else ""
+
+                session = Session()
+                get = session.query(tables.Staff).filter_by(phone=phone_number).first()
+                session.close()
+
+                if not get:
+                    session = Session()
+                    session.add(tables.Staff(
+                        full_name=name,
+                        phone=phone_number,
+                        birthday=birthday
+                    ))
+                    session.commit()
+                    session.close()
+
+    except Exception as err:
+            logger.error("Ошибка создания базы пользователей " + str(err))
 
 def create_admin():
     session = Session()
