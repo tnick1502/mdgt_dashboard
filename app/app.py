@@ -3,9 +3,27 @@ from fastapi.middleware.cors import CORSMiddleware
 from api import router
 from background_tasks import create_admin, update_db
 from db.tables import Base
+import http
 from db.database import engine
 from settings import settings
 from fastapi.templating import Jinja2Templates
+
+def get_self_public_ip():
+    conn = http.client.HTTPConnection("ifconfig.me")
+    conn.request("GET", "/ip")
+    return conn.getresponse().read().decode()
+
+def create_ip_ports_array(ip: str, *ports):
+    array = []
+    for port in ports:
+        array.append(f"{ip}:{str(port)}")
+    return array
+
+
+app = FastAPI(
+    title="Georeport MDGT",
+    description="Сервис аутентификации протоколов испытаний",
+    version="1.0.0")
 
 
 app = FastAPI(
@@ -19,16 +37,9 @@ app = FastAPI(
 
 origins = [
     "http://localhost:3000",
-    "http://localhost:8000",
-    "http://localhost:8080",
-    "http://192.168.0.41:3000",
-    'http://192.168.0.200:3000',
-    'http://192.168.0.200:3000',
-    "http://192.168.0.41",
-    "http://192.168.0.200",
-    "http://192.168.0.200:80"
-    "http://192.168.0.200:3000"
-    "localhost:3000"]
+    "http://localhost:8080"]
+
+origins += create_ip_ports_array(get_self_public_ip(), 3000, 8000, 80)
 
 
 app.add_middleware(
@@ -41,10 +52,7 @@ app.add_middleware(
                    'Authorization',
                    'Access-Control-Allow-Origin'])
 
-
 app.include_router(router)
-
-#app.mount("/static", StaticFiles(directory="static"), name="static")
 
 templates = Jinja2Templates(directory="templates")
 
