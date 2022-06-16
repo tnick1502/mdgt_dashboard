@@ -71,13 +71,13 @@ export default function LogInBar() {
 	}, [])
 
 	function onFormSubmit(event) {
+		event.preventDefault()
+
 		if (pending) return
 
 		if (!user.value() || !password.value()) return
 
 		pending = true
-
-		event.preventDefault()
 
 		client.interceptors.request.use(
 			(config) => {
@@ -142,10 +142,10 @@ export default function LogInBar() {
 
 	return (
 		<React.Fragment>
-			<div className="login-wrapper card-item unselectable">
+			<div className="login-wrapper card-item ">
 				{isLogged ? (
 					<div className="login-form">
-						<div className="login-user unselectable">{userName}</div>
+						<div className="login-user">{userName}</div>
 						<button onClick={onLogOutBtn} className="form-submit">
 							ВЫЙТИ
 						</button>

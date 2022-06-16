@@ -160,27 +160,9 @@ img {
 	display: grid;
 	grid-template-columns: 100%;
 
-	/* row-gap: 1rem; */
+	row-gap: 0.5rem;
 
 	padding: 1.15rem 1.15rem 0 1.15rem;
-}
-
-.chart-card__header {
-	-webkit-touch-callout: none; /* iOS Safari */
-	-webkit-user-select: none; /* Chrome/Safari/Opera */
-	-khtml-user-select: none; /* Konqueror */
-	-moz-user-select: none; /* Firefox */
-	-ms-user-select: none; /* Internet Explorer/Edge */
-	user-select: none;
-}
-
-.unselectable {
-	-webkit-touch-callout: none; /* iOS Safari */
-	-webkit-user-select: none; /* Chrome/Safari/Opera */
-	-khtml-user-select: none; /* Konqueror */
-	-moz-user-select: none; /* Firefox */
-	-ms-user-select: none; /* Internet Explorer/Edge */
-	user-select: none;
 }
 
 .chart-card__chart {

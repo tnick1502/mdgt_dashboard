@@ -29,7 +29,7 @@ function App() {
 					<div className="content">
 						<Navigation />
 					</div>
-					<p className="footer__copy unselectable"> &#169; by MDGT </p>
+					<p className="footer__copy"> &#169; by MDGT </p>
 				</div>
 			</Context.Provider>
 		</>

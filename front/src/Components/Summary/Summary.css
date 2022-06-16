@@ -1,5 +1,22 @@
 .summary-flex {
-	grid-template-rows: min-content min-content min-content;
+	/* grid-template-rows: max-content min-content min-content min-content;
 
-	align-content: space-between;
+	align-content: space-between; */
+	align-items: stretch;
+}
+
+.summary-flex
+	.display-cards-wrapper
+	.display-cards-wrapper__cards
+	.current-prize {
+	height: 170px;
+}
+
+@media screen and (max-width: 425px) {
+	.summary-flex
+		.display-cards-wrapper
+		.display-cards-wrapper__cards
+		.current-prize {
+		height: 150px;
+	}
 }

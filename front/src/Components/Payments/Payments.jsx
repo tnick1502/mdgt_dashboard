@@ -16,6 +16,12 @@ export default function Payments({ toSummary }) {
 	const [paymentsLoaded, setPaymentsLoaded] = useState(false)
 
 	useEffect(() => {
+		if (!isLogged) {
+			setPaymentsLoaded(false)
+			setPayments({ payments: [], dates: [] })
+			return
+		}
+
 		const paymentsRequestor = axios.create()
 		paymentsRequestor.interceptors.request.use(
 			(config) => {
@@ -70,7 +76,7 @@ export default function Payments({ toSummary }) {
 			{toSummary ? (
 				<React.Fragment>
 					<div className="chart-card card-item chart-card_payments">
-						<h1 className="chart-card__header_">Динамика выплат</h1>
+						<h1 className="">Динамика выплат</h1>
 						<div className="chart-card__chart">
 							{paymentsLoaded ? (
 								<PaymentsChart
@@ -88,9 +94,9 @@ export default function Payments({ toSummary }) {
 			) : (
 				<React.Fragment>
 					{isLogged ? (
-						<div className="transparent-item payments-grid unselectable">
+						<div className="transparent-item payments-grid">
 							<div className="chart-card card-item chart-card_payments">
-								<h1 className="chart-card__header_">Динамика выплат</h1>
+								<h1 className="">Динамика выплат</h1>
 								<div className="chart-card__chart">
 									{paymentsLoaded ? (
 										<PaymentsChart

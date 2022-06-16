@@ -15,14 +15,22 @@ export default function Reports({ toSummary }) {
 	const [reportsLoaded, setReportsLoaded] = useState(false)
 
 	useEffect(() => {
+		if (!isLogged) {
+			setReportsLoaded(false)
+			setReports({ reports: [], dates: [] })
+			return
+		}
+
 		function updateReportsChart() {
 			if (isLogged) {
 				fetch(`${api}reports/`)
 					.then((response) => response.json())
 					.then((data) => {
-						const resultData = parseReports(data)
-						setReports(resultData)
-						setReportsLoaded(true)
+						if (data && Object.keys(data).length > 0) {
+							const resultData = parseReports(data)
+							setReports(resultData)
+							setReportsLoaded(true)
+						}
 					})
 			}
 		}
@@ -36,19 +44,13 @@ export default function Reports({ toSummary }) {
 		}
 	}, [isLogged])
 
-	useEffect(() => {
-		if (!isLogged) {
-			setReports({ reports: [], dates: [] })
-		}
-	}, [isLogged])
-
 	return (
 		<>
 			{toSummary ? (
 				/* ФРАГМЕНТ ДЛЯ ЭКСПОРТА В SUMMARY */
 				<React.Fragment>
 					<div className="chart-card card-item chart-card_reports">
-						<h1 className="chart-card__header">
+						<h1 className="">
 							Выдано за {reports.dates[reports.dates.length - 1]}
 						</h1>
 						<div className="chart-card__chart">
@@ -68,10 +70,13 @@ export default function Reports({ toSummary }) {
 				/* ФРАГМЕНТ СТРАНИЦЫ С ОТЧЕТАМИ */
 				<React.Fragment>
 					{isLogged ? (
-						<div className="transparent-item reports-grid">
+						<div className="transparent-item reports-grid chart-card_reports">
 							<div className="chart-card card-item">
-								<h1 className="chart-card__header">
-									Выдано за {reports.dates[reports.dates.length - 1]}
+								<h1 className="">
+									Выдано за{' '}
+									{reportsLoaded
+										? reports.dates[reports.dates.length - 1]
+										: null}
 								</h1>
 								<div className="chart-card__chart">
 									{reportsLoaded ? (
@@ -86,7 +91,7 @@ export default function Reports({ toSummary }) {
 								</div>
 							</div>
 							<div className="chart-card card-item reports-small-item">
-								<h1 className="reports-small-item__title unselectable">
+								<h1 className="reports-small-item__title">
 									Протоколы на Python
 								</h1>
 								<div className="reports-small-item__doughnut">
@@ -102,9 +107,7 @@ export default function Reports({ toSummary }) {
 								</div>
 							</div>
 							<div className="chart-card card-item reports-small-item">
-								<h1 className="reports-small-item__title unselectable">
-									Статистика
-								</h1>
+								<h1 className="reports-small-item__title">Статистика</h1>
 								<div className="chart-card__chart ">
 									{reportsLoaded ? (
 										<ReportsChart

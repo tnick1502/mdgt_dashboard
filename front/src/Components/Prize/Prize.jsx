@@ -15,6 +15,12 @@ export default function Prize({ toSummary }) {
 	const [chartLoaded, setChartLoaded] = useState(false)
 
 	useEffect(() => {
+		if (!isLogged) {
+			setChartLoaded(false)
+			setPrizes({ prizes: [], dates: [] })
+			return
+		}
+
 		function updatePrizeChart() {
 			if (isLogged) {
 				fetch(`${api}prizes/`)
@@ -36,12 +42,6 @@ export default function Prize({ toSummary }) {
 		}
 	}, [isLogged])
 
-	useEffect(() => {
-		if (!isLogged) {
-			setPrizes({ prizes: [], dates: [] })
-		}
-	}, [isLogged])
-
 	function getMean(input) {
 		if (input.length > 1) {
 			return (
@@ -56,9 +56,7 @@ export default function Prize({ toSummary }) {
 			{toSummary ? (
 				<React.Fragment>
 					<div className="display-cards-wrapper card-item">
-						<h1 className="display-cards-wrapper__title unselectable">
-							Премия в цифрах
-						</h1>
+						<h1 className="display-cards-wrapper__title">Премия в цифрах</h1>
 						<div className="display-cards-wrapper__cards">
 							<DisplayCard
 								title={'Текущая'}
@@ -97,11 +95,9 @@ export default function Prize({ toSummary }) {
 			) : (
 				<React.Fragment>
 					{isLogged ? (
-						<div className="transparent-item prize-grid unselectable">
+						<div className="transparent-item prize-grid">
 							<div className="chart-card card-item">
-								<h1 className="chart-card__header">
-									Динамика премии в процентах
-								</h1>
+								<h1 className="">Динамика премии в процентах</h1>
 								<div className="chart-card__chart">
 									{chartLoaded ? (
 										<PrizeChart dataset={prizes} />

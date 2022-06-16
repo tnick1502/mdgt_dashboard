@@ -42,7 +42,7 @@ function DisplayCard({
 	return (
 		<>
 			{id in hidedCards || isHided ? null : (
-				<div className="current-prize card-item unselectable">
+				<div className="current-prize card-item">
 					{title ? <div className="current-prize__title">{title}</div> : null}
 					<div className={'current-prize__prize ' + colorClass}>
 						{chartLoaded ? (
