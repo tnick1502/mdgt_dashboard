@@ -3,7 +3,6 @@ from datetime import date
 from fastapi import Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from sqlalchemy.sql import extract
-from sqlalchemy import func
 
 from models.staff import Staff
 import db.tables as tables
@@ -28,7 +27,6 @@ class StaffService:
         return self.session.query(tables.Staff).filter(extract('month', tables.Staff.birthday) == month).order_by(tables.Staff.full_name).all()
 
     def get_day_birthday(self, month, day) -> List[tables.Staff]:
-        print("krgboi")
         return self.session.query(tables.Staff).filter(extract('month', tables.Staff.birthday) == month).filter(extract('day', tables.Staff.birthday) == day).order_by(tables.Staff.full_name).all()
 
     def get(self, name) -> Optional[tables.Staff]:
@@ -40,7 +38,7 @@ class StaffService:
         res = []
 
         for staff in staffs:
-            if name in staff.full_name:
+            if name.upper() in str(staff.full_name).upper():
                 res.append(staff)
 
         return res
