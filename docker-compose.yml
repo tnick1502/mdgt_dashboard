@@ -17,5 +17,11 @@ services:
       - 80:80
     restart: always
 
+  bot:
+    build: ./bot
+    container_name: bot
+    restart: always
+    network_mode: host
+
 volumes:
   files:

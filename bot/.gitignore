@@ -1,6 +1,4 @@
 venv
 .env
-bot/.env
 **/.idea
 **/__pycache__
-db/database.sqlite3
