@@ -517,7 +517,6 @@ def update_db(excel_directory, excel_path):
             logger.error("Ошибка обновления отчетов " + str(err))
 
     try:
-
         wb = openpyexcel.load_workbook("db/HappyDay.xlsx")
         for i in tqdm(range(2, 200)):
             name = wb["Лист1"]['C' + str(i)].value
@@ -526,7 +525,7 @@ def update_db(excel_directory, excel_path):
                 phone_number = "+7 " + wb["Лист1"]['F' + str(i)].value.replace("-", " ") if wb["Лист1"]['F' + str(i)].value is not None else ""
 
                 session = Session()
-                get = session.query(tables.Staff).filter_by(phone=phone_number).first()
+                get = session.query(tables.Staff).filter_by(full_name=name).first()
                 session.close()
 
                 if not get:

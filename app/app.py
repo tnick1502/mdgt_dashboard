@@ -18,6 +18,7 @@ def create_ip_ports_array(ip: str, *ports):
     array.append(f"http://{ip}")
     for port in ports:
         array.append(f"http://{ip}:{str(port)}")
+    print(array)
     return array
 
 app = FastAPI(
@@ -31,8 +32,15 @@ app = FastAPI(
 
 origins = [
     "http://localhost:3000",
-    "http://localhost:8080"
-    "http://localhost"]
+    "http://localhost:8080",
+    "http://localhost:8000",
+    "http://192.168.0.200",
+    "http://192.168.0.200:80"
+    "http://192.168.0.200:3000"
+    "http://192.168.0.41:3000",
+    "http://192.168.0.41",
+    "http://localhost",
+    "localhost:3000"]
 
 origins += get_self_public_ip()
 
