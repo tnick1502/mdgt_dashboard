@@ -15,16 +15,10 @@ def get_self_public_ip():
 
 def create_ip_ports_array(ip: str, *ports):
     array = []
+    array.append(f"http://{ip}")
     for port in ports:
-        array.append(f"{ip}:{str(port)}")
+        array.append(f"http://{ip}:{str(port)}")
     return array
-
-
-app = FastAPI(
-    title="Georeport MDGT",
-    description="Сервис аутентификации протоколов испытаний",
-    version="1.0.0")
-
 
 app = FastAPI(
     title="DashBoard MDGT",
