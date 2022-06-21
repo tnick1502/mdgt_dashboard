@@ -37,7 +37,10 @@ app = FastAPI(
 
 origins = [
     "http://localhost:3000",
-    "http://localhost:8080"]
+    "http://localhost:8080"
+    "http://localhost"]
+
+origins += get_self_public_ip()
 
 origins += create_ip_ports_array(get_self_public_ip(), 3000, 8000, 80)
 
