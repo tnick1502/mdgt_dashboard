@@ -23,16 +23,20 @@ bot = Bot(token=API_TOKEN)
 dp = Dispatcher(bot)
 
 
-def read_json_prize():
-    """Читает JSON в словарь питон"""
-    with open("prize.json", 'r', encoding='utf-8') as file:
-        json_data = json.load(file)
-    return json_data["prize"]
-
 def save_json_prize(prize: float):
     """Сохраняет премию в  JSON"""
     with open("prize.json", 'w', encoding='utf-8') as file:
         json.dump({"prize": prize}, file)
+
+def read_json_prize():
+    """Читает JSON в словарь питон"""
+    if os.path.exists("prize.json"):
+        with open("prize.json", 'r', encoding='utf-8') as file:
+            json_data = json.load(file)
+        return json_data["prize"]
+    else:
+        save_json_prize(0)
+        return 0
 
 saved_prize = read_json_prize()
 

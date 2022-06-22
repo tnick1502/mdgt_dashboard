@@ -3,4 +3,5 @@ venv
 bot/.env
 **/.idea
 **/__pycache__
-db/database.sqlite3
+bot/prize.json
+app/db/database.sqlite3
