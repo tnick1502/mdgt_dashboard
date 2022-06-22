@@ -34,9 +34,9 @@ origins = [
     "http://localhost:3000",
     "http://localhost:8080",
     "http://localhost:8000",
-    "http://192.168.0.200",
-    "http://192.168.0.200:80"
-    "http://192.168.0.200:3000"
+    "http://192.168.0.dynamicservermd",
+    "http://192.168.0.dynamicservermd:80"
+    "http://192.168.0.dynamicservermd:3000"
     "http://192.168.0.41:3000",
     "http://192.168.0.41",
     "http://localhost",

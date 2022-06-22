@@ -8,7 +8,7 @@ services:
       - 8000:8000
     restart: always
     volumes:
-      - /home/nick/projects/reports:/files
+      - /home/user_bot/disk-z:/files
 
   web:
     build: ./front/
