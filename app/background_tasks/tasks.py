@@ -517,7 +517,7 @@ def update_db(excel_directory, excel_path):
             logger.error("Ошибка обновления отчетов " + str(err))
 
     try:
-        wb = openpyexcel.load_workbook("db/HappyDay.xlsx")
+        wb = openpyexcel.load_workbook(settings.excel_staff)
         for i in tqdm(range(2, 200)):
             name = wb["Лист1"]['C' + str(i)].value
             if name is not None:

@@ -1,6 +1,8 @@
 venv
 .env
 bot/.env
+app/.env
+app_customers/.env
 **/.idea
 **/__pycache__
 bot/prize.json

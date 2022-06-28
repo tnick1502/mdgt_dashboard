@@ -174,6 +174,22 @@ async def echo(message: types.Message):
                 except:
                     await message.answer("Не найдено")
 
+    elif message.text.upper().find('ЗАКАЗЧИК') != -1:
+        name = message.text.split(" ")[1]
+
+        async with aiohttp.ClientSession() as session:
+            async with session.get(f'{"http://0.0.0.0:9000"}/customers/{name}') as resp:
+                staffs = await resp.json()
+                if len(staffs):
+                    for staff in staffs:
+
+                        s = f"{staff['full_name']}\n{staff['phone_number']}\n{staff['email']}\n{staff['organization']}\n{staff['birthday']}\n"
+                        photo = await session.get(f'{"http://0.0.0.0:9000"}/customers/photos/{staff["id"]}')
+                        await bot.send_photo(message.from_user.id, photo,
+                                             caption=s)
+                else:
+                    await message.answer("Не найдено")
+
 
 async def scheduler():
 
