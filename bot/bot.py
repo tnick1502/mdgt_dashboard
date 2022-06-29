@@ -1,13 +1,14 @@
-from aiogram import Bot, Dispatcher, executor, types
+from aiogram import Bot, Dispatcher, executor, types, utils
 from dotenv import load_dotenv
 from massages import Massages
 import os
+from io import BytesIO
 from datetime import date
 import aiohttp
-import requests
 import asyncio
 import json
 import aioschedule
+import emoji
 
 load_dotenv(dotenv_path=os.path.normpath(".env"))
 
@@ -15,6 +16,7 @@ API_TOKEN = os.getenv('API_TOKEN')
 MDGT_CHAT_ID = os.getenv('MDGT_CHAT_ID')
 MDGT_CHANNEL_ID = os.getenv('MDGT_CHANNEL_ID')
 SERVER_URI = os.getenv('SERVER_URI')
+SERVER_CUSTOMER_URI = os.getenv('SERVER_CUSTOMER_URI')
 SERVER_USERNAME = os.getenv('SERVER_USERNAME')
 SERVER_PASSWORD = os.getenv('SERVER_PASSWORD')
 
@@ -38,7 +40,48 @@ def read_json_prize():
         save_json_prize(0)
         return 0
 
+
 saved_prize = read_json_prize()
+
+
+async def get_respones(url: str):
+    try:
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url) as resp:
+                return await resp.json()
+    except aiohttp.client_exceptions.ClientConnectorError:
+        return None
+
+async def get_respones_with_auth(url: str):
+    jar = aiohttp.CookieJar(unsafe=True)
+    try:
+        async with aiohttp.ClientSession(cookie_jar=jar) as session:
+            res = await session.post(f'{SERVER_URI}/authorization/sign-in/',
+                                     data={
+                                         "username": SERVER_USERNAME,
+                                         "password": SERVER_PASSWORD,
+                                         "grant_type": "password",
+                                         "scope": "",
+                                         "client_id": "",
+                                         "client_secret": ""
+                                     }, allow_redirects=False)
+            await res.json()
+
+            async with session.get(url) as resp:
+                return await resp.json()
+    except aiohttp.client_exceptions.ClientConnectorError:
+        return None
+
+async def download_content_as_bytes(url: str) -> bytes:
+    content = None
+    try:
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url) as response:
+                content = await response.read()
+    except aiohttp.client_exceptions.ClientConnectorError:
+        pass
+    finally:
+        return content
 
 
 @dp.message_handler(commands=['start', 'help'])
@@ -49,146 +92,146 @@ async def welcome(message: types.Message):
 async def prize(message: types.Message):
     """Запрос текущей премии"""
     today = date.today()
-    async with aiohttp.ClientSession() as session:
-        async with session.get(f'{SERVER_URI}/prizes/{today.year}-{today.month}-25') as resp:
-            prize = await resp.json()
-            await message.answer(f"{prize.get('prize', 0)} %")
+    prize = await get_respones(f'{SERVER_URI}/prizes/{today.year}-{today.month}-25')
+    if prize is None:
+        await message.answer(text="Сервер не отвечает " + emoji.emojize(":smiling_face_with_tear:"))
+        return
+
+    await message.answer(f"{prize.get('prize', 0)} %")
 
 @dp.message_handler(commands=["prizes"])
 async def prizes(message: types.Message):
     """Запрос истории премий"""
-    async with aiohttp.ClientSession() as session:
-        async with session.get(f'{SERVER_URI}/prizes/') as resp:
-            prizes = await resp.json()
-            try:
-                s = "".join([f"дата: {prize['date']} | премия: {prize['prize']}\n" for prize in prizes])
-                await message.answer(s if s else "Не найдено")
-            except:
-                await message.answer("Не найдено")
+    prizes = await get_respones(f'{SERVER_URI}/prizes/')
+    if prizes is None:
+        await message.answer(text="Сервер не отвечает " + emoji.emojize(":smiling_face_with_tear:"))
+        return
+
+    try:
+        s = "".join([f"дата: {prize['date']} | премия: {prize['prize']}\n" for prize in prizes])
+        await message.answer(s if s else "Не найдено")
+    except:
+        await message.answer("Не найдено")
 
 @dp.message_handler(commands=["report"])
 async def report(message: types.Message):
     """Запрос отчета за текущий месяц"""
     today = date.today()
-    async with aiohttp.ClientSession() as session:
-        async with session.get(f'{SERVER_URI}/reports/{today.year}-{today.month}-25') as resp:
-            report = await resp.json()
-            if 'detail' in report:
-                await message.answer("Не найдено")
-            else:
-                s = "\n".join([f"{key}: {report[key]}" for key in report.keys() if key != "date"])
-                await message.answer(s)
+    report = await get_respones(f'{SERVER_URI}/reports/{today.year}-{today.month}-25')
+    if report is None:
+        await message.answer(text="Сервер не отвечает " + emoji.emojize(":smiling_face_with_tear:"))
+        return
+
+    if 'detail' in report:
+        await message.answer("Не найдено")
+    else:
+        s = "\n".join([f"{key}: {report[key]}" for key in report.keys() if key != "date"])
+        await message.answer(s)
 
 @dp.message_handler(commands=["reports"])
 async def reports(message: types.Message):
     """Запрос истории отчетности"""
-    async with aiohttp.ClientSession() as session:
-        async with session.get(f'{SERVER_URI}/reports/') as resp:
-            reports = await resp.json()
-            try:
-                s = ""
-                for report in reports:
-                    s += "\n".join([f"{key}: {report[key]}" for key in report.keys()]) + "\n\n\n"
-                await message.answer(s if s else "Не найдено")
-            except:
-                await message.answer("Не найдено")
+    reports = await get_respones(f'{SERVER_URI}/reports/')
+    if reports is None:
+        await message.answer(text="Сервер не отвечает " + emoji.emojize(":smiling_face_with_tear:"))
+        return
+
+    try:
+        s = ""
+        for report in reports:
+            s += "\n".join([f"{key}: {report[key]}" for key in report.keys()]) + "\n\n\n"
+        await message.answer(s if s else "Не найдено")
+    except:
+        await message.answer("Не найдено")
 
 @dp.message_handler(commands=["pay"])
 async def pay(message: types.Message):
     """Запрос оплаты за тукущий месяц"""
     today = date.today()
-    jar = aiohttp.CookieJar(unsafe=True)
-    async with aiohttp.ClientSession(cookie_jar=jar) as session:
-        res = await session.post(f'{SERVER_URI}/authorization/sign-in/',
-                                 data={
-                                     "username": SERVER_USERNAME,
-                                     "password": SERVER_PASSWORD,
-                                     "grant_type": "password",
-                                     "scope": "",
-                                     "client_id": "",
-                                     "client_secret": ""
-                                 }, allow_redirects=False)
-        await res.json()
+    pay = await get_respones_with_auth(f'{SERVER_URI}/pay/{today.year}-{today.month}-25')
 
-        async with session.get(f'{SERVER_URI}/pay/{today.year}-{today.month}-25') as resp:
-            pay = await resp.json()
+    if pay is None:
+        await message.answer(text="Сервер не отвечает " + emoji.emojize(":smiling_face_with_tear:"))
+        return
 
-            if 'detail' in pay:
-                await message.answer("Не найдено")
-            else:
-                s = "\n".join([f"{key}: {pay[key]}" for key in pay.keys() if key != "date"])
-                await message.answer(s)
+    if 'detail' in pay:
+        await message.answer("Не найдено")
+    else:
+        s = "\n".join([f"{key}: {pay[key]}" for key in pay.keys() if key != "date"])
+        await message.answer(s)
 
 @dp.message_handler(commands=["pays"])
 async def pays(message: types.Message):
     """Запрос статистики оплаты"""
-    jar = aiohttp.CookieJar(unsafe=True)
-    async with aiohttp.ClientSession(cookie_jar=jar) as session:
-        res = await session.post(f'{SERVER_URI}/authorization/sign-in/',
-                                 data={
-                                     "username": SERVER_USERNAME,
-                                     "password": SERVER_PASSWORD,
-                                     "grant_type": "password",
-                                     "scope": "",
-                                     "client_id": "",
-                                     "client_secret": ""
-                                 }, allow_redirects=False)
-        await res.json()
+    pays = await get_respones_with_auth(f'{SERVER_URI}/pay/')
+    if pays is None:
+        await message.answer(text="Сервер не отвечает " + emoji.emojize(":smiling_face_with_tear:"))
+        return
 
-        async with session.get(f'{SERVER_URI}/pay/') as resp:
-            pays = await resp.json()
-            try:
-                s = ""
-                for pay in pays:
-                    s += "\n".join([f"{key}: {pay[key]}" for key in pay.keys()]) + "\n\n\n"
-                await message.answer(s if s else "Не найдено")
-            except:
-                await message.answer("Не найдено")
+    try:
+        s = ""
+        for pay in pays:
+            s += "\n".join([f"{key}: {pay[key]}" for key in pay.keys()]) + "\n\n\n"
+        await message.answer(s if s else "Не найдено")
+    except:
+        await message.answer("Не найдено")
 
 @dp.message_handler(commands=["birthdays"])
 async def birthdays(message: types.Message):
     """Запрос дней рождений в текущем месяцу"""
     today = date.today()
-    async with aiohttp.ClientSession() as session:
-        async with session.get(f'{SERVER_URI}/staff/month_birthday/?month={today.month}') as resp:
-            staffs = await resp.json()
-            try:
-                s = ""
-                for staff in staffs:
-                    s += f"{staff['birthday']} | {staff['full_name']}" + "\n\n"
-                await message.answer(s if s else "Не найдено")
-            except:
-                await message.answer("Не найдено")
+    staffs = await get_respones(f'{SERVER_URI}/staff/month_birthday/?month={today.month}')
+    if staffs is None:
+        await message.answer(text="Сервер не отвечает " + emoji.emojize(":smiling_face_with_tear:"))
+        return
+
+    try:
+        s = ""
+        for staff in staffs:
+            s += f"{staff['birthday']} | {staff['full_name']}" + "\n\n"
+        await message.answer(s if s else "Не найдено")
+    except:
+        await message.answer("Не найдено")
 
 @dp.message_handler()
 async def echo(message: types.Message):
     if message.text.upper().find('НОМЕР') != -1:
         name = message.text.split(" ")[1]
+        staffs = await get_respones(f'{SERVER_URI}/staff/{name}')
 
-        async with aiohttp.ClientSession() as session:
-            async with session.get(f'{"http://0.0.0.0:8000"}/staff/{name}') as resp:
-                staffs = await resp.json()
-                try:
-                    s = "".join([f"{staff['full_name']} | {staff['phone']}\n" for staff in staffs])
-                    await message.answer(s if s else "Не найдено")
-                except:
-                    await message.answer("Не найдено")
+        if staffs is None:
+            await message.answer(text="Сервер не отвечает " + emoji.emojize(":smiling_face_with_tear:"))
+            return
+
+        try:
+            s = "".join([f"{staff['full_name']} | {staff['phone']}\n" for staff in staffs])
+            await message.answer(s if s else "Не найдено")
+        except:
+            await message.answer("Не найдено")
 
     elif message.text.upper().find('ЗАКАЗЧИК') != -1:
         name = message.text.split(" ")[1]
 
-        async with aiohttp.ClientSession() as session:
-            async with session.get(f'{"http://0.0.0.0:9000"}/customers/{name}') as resp:
-                staffs = await resp.json()
-                if len(staffs):
-                    for staff in staffs:
+        customers = await get_respones(f'{SERVER_CUSTOMER_URI}/customers/{name}')
 
-                        s = f"{staff['full_name']}\n{staff['phone_number']}\n{staff['email']}\n{staff['organization']}\n{staff['birthday']}\n"
-                        photo = await session.get(f'{"http://0.0.0.0:9000"}/customers/photos/{staff["id"]}')
-                        await bot.send_photo(message.from_user.id, photo,
-                                             caption=s)
-                else:
-                    await message.answer("Не найдено")
+        if customers is None:
+            await message.answer(text="Сервер не отвечает " + emoji.emojize(":smiling_face_with_tear:"))
+            return
+
+        if len(customers):
+            for customer in customers:
+                s = f"ФИО: {customer['full_name']}\nНомер телефона: +{customer['phone_number']}\nПочта: {customer['email']}\nОрганизация: {customer['organization']}\nДата рождения:{customer['birthday']}\n"
+                await message.answer(s)
+                photo = await download_content_as_bytes(f'{SERVER_CUSTOMER_URI}/customers/get_photo/{customer["id"]}')
+                try:
+                    bytes_photo = BytesIO()
+                    bytes_photo.write(photo)
+                    bytes_photo.seek(0)
+                    await bot.send_photo(message.from_user.id, types.InputFile(bytes_photo))
+                except utils.exceptions.BadRequest:
+                    pass
+        else:
+            await message.answer("Не найдено")
 
 
 async def scheduler():
@@ -228,4 +271,4 @@ async def on_startup(_):
 
 
 if __name__ == '__main__':
-    executor.start_polling(dp, skip_updates=True, on_startup=on_startup)
+    executor.start_polling(dp, skip_updates=False, on_startup=on_startup)

@@ -42,7 +42,7 @@ origins = [
 
 origins += get_self_public_ip()
 
-origins += create_ip_ports_array(get_self_public_ip(), 3000, 8000, 80)
+origins += create_ip_ports_array(get_self_public_ip(), 3000, 9600, 80)
 
 
 app.add_middleware(
