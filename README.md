@@ -14,16 +14,18 @@
 2. Создать структуру папок:
    -/home/database/
       -customers
+         -customers.xlsx         
          -photos
-         -customers.xlsx
+            -1 
+            -2 ....
       -organization
          -staff.xlsx
     В папке photos хранятся фото заказчиков c именами по id в формате jpg
     Файлы staff.xlsx и customers.xlsx хранятся в папке data
 
-3. В файле .env прописать пути к созданным папкам
+4. В файле .env прописать пути к созданным папкам
 
-4. Создать папки для связи с контейнерами:
+5. Создать папки для связи с контейнерами:
     
     Для Linux привяжем сетевой диск к папке:
     sudo mount.cifs //192.168.0.1/files YOUR_PATH -o user=v.antonij,pass=eHar4Er9
@@ -31,12 +33,12 @@
 
     Для Windows ничего не делаем. Далее испозьзуем YOUR_PATH = //192.168.0.1/files
 
-5. Можно запустить через контейнер:
+6. Можно запустить через контейнер:
     
     docker build -t mdgt_dashboard .
     docker run -v YOUR_PATH:/files -p 8000:8000 mdgt_dashboard
 
-6. Или через docker-compose:
+7. Или через docker-compose:
 
     docker-compose up
 

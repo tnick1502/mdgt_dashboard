@@ -25,7 +25,7 @@ def update_db():
 
     try:
         wb = openpyexcel.load_workbook(settings.excel_file)
-        for i in tqdm(range(2, len(wb["Лист1"]['B']))):
+        for i in tqdm(range(2, len(wb["Лист1"]['B']) + 1)):
             full_name = wb["Лист1"]['B' + str(i)].value
             phone_number = wb["Лист1"]['C' + str(i)].value
             email = wb["Лист1"]['D' + str(i)].value

@@ -49,7 +49,7 @@ async def get_respones(url: str):
         async with aiohttp.ClientSession() as session:
             async with session.get(url) as resp:
                 return await resp.json()
-    except aiohttp.client_exceptions.ClientConnectorError:
+    except (aiohttp.client_exceptions.ClientConnectorError, aiohttp.client_exceptions.ContentTypeError):
         return None
 
 async def get_respones_with_auth(url: str):
@@ -220,16 +220,15 @@ async def echo(message: types.Message):
 
         if len(customers):
             for customer in customers:
-                s = f"ФИО: {customer['full_name']}\nНомер телефона: +{customer['phone_number']}\nПочта: {customer['email']}\nОрганизация: {customer['organization']}\nДата рождения:{customer['birthday']}\n"
-                await message.answer(s)
+                s = f"ФИО: {customer['full_name']}\nНомер телефона: +{customer['phone_number']}\nПочта: {customer['email']}\nОрганизация: {customer['organization']}\nДата рождения: {customer['birthday']}\n"
                 photo = await download_content_as_bytes(f'{SERVER_CUSTOMER_URI}/customers/get_photo/{customer["id"]}')
                 try:
                     bytes_photo = BytesIO()
                     bytes_photo.write(photo)
                     bytes_photo.seek(0)
-                    await bot.send_photo(message.from_user.id, types.InputFile(bytes_photo))
+                    await bot.send_photo(message.from_user.id, types.InputFile(bytes_photo), caption=s)
                 except utils.exceptions.BadRequest:
-                    pass
+                    await message.answer(s)
         else:
             await message.answer("Не найдено")
 
@@ -239,25 +238,21 @@ async def scheduler():
     async def check_prize():
         global saved_prize
         today = date.today()
-        async with aiohttp.ClientSession() as session:
-            async with session.get(f'{SERVER_URI}/prizes/{today.year}-{today.month}-25') as resp:
-                prize = await resp.json()
-                prize = prize.get('prize', 0)
-                if prize != saved_prize:
-                    saved_prize = prize
-                    save_json_prize(prize)
-                    await bot.send_message(MDGT_CHANNEL_ID, text=Massages.prize_massage(prize))
+        prize = await get_respones(f'{SERVER_URI}/prizes/{today.year}-{today.month}-25')
+        prize = prize.get('prize', 0)
+        if prize != saved_prize:
+            saved_prize = prize
+            save_json_prize(prize)
+            await bot.send_message(MDGT_CHANNEL_ID, text=Massages.prize_massage(prize))
 
     async def check_birthday():
         today = date.today()
-        async with aiohttp.ClientSession() as session:
-            async with session.get(f'{SERVER_URI}/staff/day_birthday/?month={today.month}&day={today.day}') as resp:
-                staffs = await resp.json()
-                for staff in staffs:
-                    if staff == "detail":
-                        return
-                    await bot.send_message(MDGT_CHANNEL_ID,
-                                           text=Massages.happy_birthday_massage(staff["full_name"], staff["phone"]))
+        staffs = await get_respones(f'{SERVER_URI}/staff/day_birthday/?month={today.month}&day={today.day}')
+        for staff in staffs:
+            if staff == "detail":
+                return
+            await bot.send_message(MDGT_CHANNEL_ID,
+                                   text=Massages.happy_birthday_massage(staff["full_name"], staff["phone"]))
 
     aioschedule.every(10).minutes.do(check_prize)
     aioschedule.every().day.at("9:30").do(check_birthday)
