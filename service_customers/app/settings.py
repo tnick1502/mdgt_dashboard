@@ -1,10 +1,9 @@
 from pydantic import BaseSettings
-import os
-from dotenv import load_dotenv
 
-load_dotenv(dotenv_path=os.path.normpath(".env"))
+
 customers = "/databases/customers/"
 #customers = "/home/nick/databases/customers/"
+
 class Settings(BaseSettings):
     server_host: str = "0.0.0.0"
     server_port: int = 9600

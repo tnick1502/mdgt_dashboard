@@ -1,9 +1,9 @@
 version: '3.7'
 
 services:
-  mdgt_dashboard:
-    build: ./app/
-    container_name: mdgt_dashboard
+  service_organization:
+    build: ./service_organization/
+    container_name: service_organization
     ports:
       - 8000:8000
     restart: always
@@ -12,24 +12,24 @@ services:
       - /home/user_bot/database/:/database
 
   web:
-    build: ./front/
+    build: ./service_front/
     container_name: web
     ports:
       - 80:80
     restart: always
 
-  customers:
-    build: ./app_customers/
-    container_name: customers
+  service_customers:
+    build: ./service_customers/
+    container_name: service_customers
     ports:
       - 9000:9000
     restart: always
     volumes:
-      - /home/user_bot/database/:/database
+      - /home/nick/database/:/database
 
-  bot:
-    build: ./bot
-    container_name: bot
+  service_bot:
+    build: ./service_bot
+    container_name: service_bot
     restart: always
     network_mode: host
 

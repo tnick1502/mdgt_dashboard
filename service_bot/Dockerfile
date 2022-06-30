@@ -10,6 +10,6 @@ RUN pip install --upgrade pip
 
 RUN pip install --user --no-cache-dir --upgrade -r /code/requirements.txt
 
-COPY . /code
+COPY ./app /code
 
 CMD ["python", "bot.py"]
