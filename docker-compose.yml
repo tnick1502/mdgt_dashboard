@@ -9,7 +9,15 @@ services:
     restart: always
     volumes:
       - /home/user_bot/disk-z:/files
-      - /home/user_bot/database/:/database
+      - /home/nick/databases/:/databases
+
+  service_customers:
+    build: ./service_customers/
+    container_name: service_customers
+    ports:
+      - 9000:9000
+    volumes:
+      - /home/nick/databases/:/databases
 
   web:
     build: ./service_front/
@@ -18,15 +26,6 @@ services:
       - 80:80
     restart: always
 
-  service_customers:
-    build: ./service_customers/
-    container_name: service_customers
-    ports:
-      - 9000:9000
-    restart: always
-    volumes:
-      - /home/nick/database/:/database
-
   service_bot:
     build: ./service_bot
     container_name: service_bot
@@ -34,4 +33,4 @@ services:
     network_mode: host
 
 volumes:
-  files:
+  databases:

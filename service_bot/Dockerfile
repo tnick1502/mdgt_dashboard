@@ -12,4 +12,6 @@ RUN pip install --user --no-cache-dir --upgrade -r /code/requirements.txt
 
 COPY ./app /code
 
+COPY ./.env /code/.env
+
 CMD ["python", "bot.py"]
