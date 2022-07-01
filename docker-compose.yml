@@ -9,7 +9,7 @@ services:
     restart: always
     volumes:
       - /home/user_bot/disk-z:/files
-      - /home/nick/databases/:/databases
+      - /home/user_bot/databases/:/databases
 
   service_customers:
     build: ./service_customers/
@@ -17,7 +17,7 @@ services:
     ports:
       - 9000:9000
     volumes:
-      - /home/nick/databases/:/databases
+      - /home/user_bot/databases/:/databases
 
   web:
     build: ./service_front/

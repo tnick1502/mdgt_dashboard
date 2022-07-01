@@ -16,7 +16,7 @@ class Settings(BaseSettings):
     prize_directory: str = os.path.normcase(prize_dir)
 
     excel_staff: str = f'{db_path}staff.xlsx'
-    database_url: str = f"sqlite:////code/app/db/database.sqlite3"
+    database_url: str = f"sqlite:///{db_path}database.sqlite3"
 
     jwt_secret: str = "OOIOIPSJFBSFBSBGBBSB"
     jwt_algorithm: str = "HS256"
