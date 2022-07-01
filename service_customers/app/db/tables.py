@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Date, Float, String, Integer, BigInteger
+from sqlalchemy import Column, Date, Float, String, Integer, BigInteger, Enum
 from sqlalchemy.ext.declarative import declarative_base
 
 
@@ -13,6 +13,6 @@ class Customers(Base):
     phone_number = Column(BigInteger, unique=True)
     sex = Column(String)
     email = Column(String, unique=True)
-    birthday = Column(Date)
+    birthday = Column(Date, nullable=True)
     organization = Column(String)
     level = Column(String)
