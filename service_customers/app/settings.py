@@ -10,6 +10,6 @@ class Settings(BaseSettings):
 
     photo_path: str = f'{customers}photos'
     excel_file: str = f'{customers}customers.xlsx'
-    database_url: str = f"sqlite:///{customers}database.sqlite3"
+    database_url: str = f"sqlite:////code/app/db/database.sqlite3"
 
 settings = Settings()
