@@ -12,11 +12,12 @@ import xlrd
 from xlrd import open_workbook
 from loguru import logger
 import time
+from tqdm import tqdm
 
 from models.reports import Report
 from models.prizes import Prize
 import db.tables as tables
-from tqdm import tqdm
+from settings import settings
 
 @dataclass
 class Unit:
