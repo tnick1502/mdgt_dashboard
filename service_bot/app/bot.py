@@ -245,17 +245,20 @@ async def scheduler():
                 saved_prize = prize
                 save_json_prize(prize)
                 await bot.send_message(MDGT_CHANNEL_ID, text=Massages.prize_massage(prize))
-        except:
+        except TypeError:
             pass
 
     async def check_birthday():
         today = date.today()
         staffs = await get_respones(f'{SERVER_URI}/staff/day_birthday/?month={today.month}&day={today.day}')
-        for staff in staffs:
-            if staff == "detail":
-                return
-            await bot.send_message(MDGT_CHANNEL_ID,
-                                   text=Massages.happy_birthday_massage(staff["full_name"], staff["phone"]))
+        try:
+            for staff in staffs:
+                if staff == "detail":
+                    return
+                await bot.send_message(MDGT_CHANNEL_ID,
+                                      text=Massages.happy_birthday_massage(staff["full_name"], staff["phone"]))
+        except TypeError:
+            pass
 
     aioschedule.every(10).minutes.do(check_prize)
     aioschedule.every().day.at("9:30").do(check_birthday)
