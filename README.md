@@ -23,16 +23,18 @@
     Для Windows ничего не делаем. Далее испозьзуем `YOUR_PATH = ip_диска/files`
 
 3. Создать структуру папок:\
-   `-/home/database/
-      -customers
-         -customers.xlsx         
-         -photos
-            -1/pick1.jpg....
-            -2/pick1.jpg....
-      -organization
-         -staff.xlsx`
-    В папке photos хранятся фото заказчиков c именами по id в формате jpg.\
-    Файлы staff.xlsx и customers.xlsx хранятся в папке data.\
+   -/home/database/\
+   ---customers\
+   ------customers.xlsx   
+   ------photos\
+   ---------1/pick1.jpg....\
+   ---------2/pick1.jpg....\
+   ---organization\
+   ------staff.xlsx
+    
+    В папке photos хранятся фото заказчиков c именами по id в формате jpg.
+    
+    Файлы staff.xlsx и customers.xlsx хранятся в папке data.
 
-4. Запуск через docker-compose\
+5. Запуск через docker-compose\
     `docker-compose up`
