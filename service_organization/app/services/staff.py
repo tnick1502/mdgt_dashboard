@@ -24,7 +24,7 @@ class StaffService:
         return self.session.query(tables.Staff).order_by(tables.Staff.full_name).all()
 
     def get_month_birthday(self, month) -> List[tables.Staff]:
-        return self.session.query(tables.Staff).filter(extract('month', tables.Staff.birthday) == month).order_by(tables.Staff.full_name).all()
+        return self.session.query(tables.Staff).filter(extract('month', tables.Staff.birthday) == month).order_by(extract('day', tables.Staff.birthday)).all()
 
     def get_day_birthday(self, month, day) -> List[tables.Staff]:
         return self.session.query(tables.Staff).filter(extract('month', tables.Staff.birthday) == month).filter(extract('day', tables.Staff.birthday) == day).order_by(tables.Staff.full_name).all()
