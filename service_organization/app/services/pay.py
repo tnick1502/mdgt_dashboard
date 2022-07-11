@@ -18,7 +18,7 @@ tips = {
     'python_compression_report': 45,
     'mechanics_statement': 9,
     'physical_statement': 17.5,
-    'mathcad_report': 10
+    'mathcad_report': 30
 }
 
 class PayService(ReportsService):
