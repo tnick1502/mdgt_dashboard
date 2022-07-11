@@ -44,25 +44,79 @@ export default function Reports({ toSummary }) {
 		}
 	}, [isLogged])
 
+	const linesNames = {
+		python_all: { title: 'Python', color: 'hsl(221, 24%, 32%)' },
+		mathcad_report: { title: 'Mathcad', color: '#3D84A8' },
+		physical_statement: { title: 'Физика', color: '#46CDCF' },
+		mechanics_statement: { title: 'Механика', color: '#ABEDD8' },
+		python_percent: { title: 'Python, %', color: 'hsl(221, 24%, 32%)' },
+		'python_all+mathcad_report': {
+			title: 'Протоколы механика',
+			color: '#3D84A8',
+		},
+	}
+
 	return (
 		<>
 			{toSummary ? (
 				/* ФРАГМЕНТ ДЛЯ ЭКСПОРТА В SUMMARY */
 				<React.Fragment>
-					<div className="chart-card card-item chart-card_reports">
-						<h1 className="">
-							Выдано за {reports.dates[reports.dates.length - 1]}
-						</h1>
-						<div className="chart-card__chart">
-							{reportsLoaded ? (
-								<ReportsBarChart
-									dataset={{
-										reports: reports.reports[reports.reports.length - 1],
-									}}
-								/>
-							) : (
-								<div className="blank-page-ar-2"></div>
-							)}
+					<div className="chart-card card-item reports-charts">
+						<h1 className="reports__title">Статистика</h1>
+						<div className="reports-charts__item">
+							<h3>Ведомости и протоколы</h3>
+							<div className="chart-card__chart ">
+								{reportsLoaded ? (
+									<ReportsChart
+										dataset={{
+											reports: reports.reports,
+											dates: reports.dates,
+										}}
+										reportsKeys={[
+											'physical_statement',
+											'mechanics_statement',
+											'python_all+mathcad_report',
+										]}
+										linesNames={linesNames}
+									/>
+								) : (
+									<div className="blank-page-ar-2"></div>
+								)}
+							</div>
+						</div>
+						<div className="reports-charts__item">
+							<h3>Внедрение Python</h3>
+							<div className="chart-card__chart ">
+								{reportsLoaded ? (
+									<ReportsChart
+										dataset={{
+											reports: reports.reports,
+											dates: reports.dates,
+										}}
+										reportsKeys={['python_percent']}
+										linesNames={linesNames}
+									/>
+								) : (
+									<div className="blank-page-ar-2"></div>
+								)}
+							</div>
+						</div>
+						<div className="reports-charts__item">
+							<h3>Протоклы Python и Mathcad</h3>
+							<div className="chart-card__chart ">
+								{reportsLoaded ? (
+									<ReportsChart
+										dataset={{
+											reports: reports.reports,
+											dates: reports.dates,
+										}}
+										reportsKeys={['python_all', 'mathcad_report']}
+										linesNames={linesNames}
+									/>
+								) : (
+									<div className="blank-page-ar-2"></div>
+								)}
+							</div>
 						</div>
 					</div>
 				</React.Fragment>
@@ -71,6 +125,64 @@ export default function Reports({ toSummary }) {
 				<React.Fragment>
 					{isLogged ? (
 						<div className="transparent-item reports-grid chart-card_reports">
+							<div className="chart-card card-item reports-charts">
+								<h1 className="reports__title">Статистика</h1>
+								<div className="reports-charts__item">
+									<h3>Ведомости и протоколы</h3>
+									<div className="chart-card__chart ">
+										{reportsLoaded ? (
+											<ReportsChart
+												dataset={{
+													reports: reports.reports,
+													dates: reports.dates,
+												}}
+												reportsKeys={[
+													'physical_statement',
+													'mechanics_statement',
+													'python_all+mathcad_report',
+												]}
+												linesNames={linesNames}
+											/>
+										) : (
+											<div className="blank-page-ar-2"></div>
+										)}
+									</div>
+								</div>
+								<div className="reports-charts__item">
+									<h3>Внедрение Python</h3>
+									<div className="chart-card__chart ">
+										{reportsLoaded ? (
+											<ReportsChart
+												dataset={{
+													reports: reports.reports,
+													dates: reports.dates,
+												}}
+												reportsKeys={['python_percent']}
+												linesNames={linesNames}
+											/>
+										) : (
+											<div className="blank-page-ar-2"></div>
+										)}
+									</div>
+								</div>
+								<div className="reports-charts__item">
+									<h3>Протоклы Python и Mathcad</h3>
+									<div className="chart-card__chart ">
+										{reportsLoaded ? (
+											<ReportsChart
+												dataset={{
+													reports: reports.reports,
+													dates: reports.dates,
+												}}
+												reportsKeys={['python_all', 'mathcad_report']}
+												linesNames={linesNames}
+											/>
+										) : (
+											<div className="blank-page-ar-2"></div>
+										)}
+									</div>
+								</div>
+							</div>
 							<div className="chart-card card-item">
 								<h1 className="">
 									Выдано за{' '}
@@ -90,30 +202,13 @@ export default function Reports({ toSummary }) {
 									)}
 								</div>
 							</div>
-							<div className="chart-card card-item reports-small-item">
-								<h1 className="reports-small-item__title">
-									Протоколы на Python
-								</h1>
-								<div className="reports-small-item__doughnut">
+							<div className="chart-card card-item reports__doughnut-item">
+								<h1 className="reports__title">Протоколы на Python</h1>
+								<div className="reports__doughnut">
 									{reportsLoaded ? (
 										<ReportsDoughnut
 											dataset={{
 												reports: reports.reports[reports.reports.length - 1],
-											}}
-										/>
-									) : (
-										<div className="blank-page-ar-2"></div>
-									)}
-								</div>
-							</div>
-							<div className="chart-card card-item reports-small-item">
-								<h1 className="reports-small-item__title">Статистика</h1>
-								<div className="chart-card__chart ">
-									{reportsLoaded ? (
-										<ReportsChart
-											dataset={{
-												reports: reports.reports,
-												dates: reports.dates,
 											}}
 										/>
 									) : (

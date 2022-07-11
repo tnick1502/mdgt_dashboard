@@ -1,46 +1,50 @@
+.chart-card_reports {
+	grid-auto-rows: min-content 1fr;
+	height: fit-content;
+}
+
 .reports-grid {
-	grid-template-rows: min-content auto;
+	grid-auto-rows: min-content;
+
 	grid-template-columns: auto auto;
-
-	grid-template-areas:
-		'a a'
-		'b c';
 }
 
-.reports-grid .chart-card.card-item:first-child {
-	grid-area: a;
+.reports-charts {
+	position: relative;
+
+	grid-column-start: 1;
+	grid-column-end: -1;
+
+	grid-template-columns: minmax(100px, 1fr);
 }
 
-.reports-grid .chart-card.card-item:nth-child(2) {
-	grid-area: b;
+.reports-charts > .reports__title {
+	grid-column-start: 1;
+	grid-column-end: -1;
 }
 
-.reports-grid .chart-card.card-item:last-child {
-	grid-area: c;
-}
+.reports-charts__item {
+	position: relative;
 
-.reports-small-item {
+	width: 100%;
+	height: 100%;
+
 	display: flex;
 	flex-direction: column;
 
-	position: relative;
-
-	min-width: 30vw;
-	min-height: 30vh;
-
-	height: 100%;
-
-	/* width: 100%;
-	height: 100%; */
+	row-gap: var(--row-gap);
 }
 
-.reports-small-item__title {
-	align-self: center;
-	text-align: center;
+.reports__doughnut-item {
+	position: relative;
+	max-width: 30vw;
+	min-width: 250px;
 }
 
-.reports-small-item__doughnut {
+.reports__doughnut {
 	position: relative;
+
+	min-height: var(--chart-min-height);
 
 	display: flex;
 	align-items: center;
@@ -50,24 +54,36 @@
 	height: 100%;
 }
 
-.chart-card_reports {
-	min-height: 30vh !important;
+.reports-charts .chart-card__chart {
+	min-height: unset;
+}
+
+@media screen and (min-width: 1024px) {
+	.reports-charts {
+		grid-template-columns: minmax(100px, 1fr) minmax(100px, 1fr) minmax(
+				100px,
+				1fr
+			);
+
+		min-height: unset;
+		height: 373px;
+	}
+
+	.reports-charts .chart-card__chart {
+		min-height: unset;
+		height: 100%;
+	}
 }
 
 @media screen and (max-width: 768px) {
 	.reports-grid {
 		grid-template-columns: 1fr;
-
-		grid-template-areas:
-			'a'
-			'b'
-			'c';
 	}
-
-	.reports-small-item {
-		max-width: unset;
-
-		min-width: 30vw;
-		min-height: 30vh;
+	.reports-charts {
+		min-height: unset;
+		height: fit-content;
+	}
+	.reports-charts .chart-card__chart {
+		min-height: unset;
 	}
 }

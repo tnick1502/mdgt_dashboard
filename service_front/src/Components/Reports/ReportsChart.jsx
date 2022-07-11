@@ -21,7 +21,7 @@ ChartJS.register(
 	Legend
 )
 
-export default function ReportsChart({ dataset }) {
+export default function ReportsChart({ dataset, reportsKeys, linesNames }) {
 	const inputData = { reports: [...dataset.reports], dates: [...dataset.dates] }
 
 	const dates = [...inputData.dates]
@@ -42,32 +42,26 @@ export default function ReportsChart({ dataset }) {
 	const labels = inputData.dates
 
 	const reportsDatasets = []
-	const linesNames = {
-		python_all: 'Питон',
-		mathcad_report: 'Маткад',
-		physical_statement: 'Физика',
-		mechanics_statement: 'Механика',
-	}
-	const typesColors = {
-		python_all: 'hsl(221, 24%, 32%)',
-		mathcad_report: '#3D84A8',
-		physical_statement: '#46CDCF',
-		mechanics_statement: '#ABEDD8',
-	}
 
-	const types = Object.keys(linesNames)
+	// const types = Object.keys(linesNames)
+	const types = reportsKeys
 	types.forEach((type) => {
 		const lineData = []
 
 		for (let i = 0; i < inputData.reports.length; i++) {
-			lineData.push(inputData.reports[i][type])
+			const joinTypes = type.split('+')
+			let sum = 0
+			joinTypes.forEach((jointype) => {
+				sum += inputData.reports[i][jointype.replace(/\s+/g, '')]
+			})
+			lineData.push(sum)
 		}
 
 		reportsDatasets.push({
-			label: linesNames[type],
+			label: linesNames[type].title,
 			data: lineData,
-			borderColor: typesColors[type],
-			backgroundColor: typesColors[type],
+			borderColor: linesNames[type].color,
+			backgroundColor: linesNames[type].color,
 			fill: false,
 			cubicInterpolationMode: 'monotone',
 			tension: 0.4,
@@ -114,6 +108,7 @@ export default function ReportsChart({ dataset }) {
 					color: 'black',
 					align: 'center',
 				},
+				suggestedMax: 100,
 				suggestedMin: 0,
 				ticks: {
 					color: 'black',

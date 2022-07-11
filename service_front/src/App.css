@@ -7,6 +7,8 @@
 	display: grid;
 	row-gap: var(--row-gap);
 	grid-template-rows: min-content auto min-content;
+
+	overflow-x: hidden;
 }
 
 .content {
@@ -14,6 +16,9 @@
 	column-gap: var(--col-gap);
 	grid-template-columns: min-content 1fr;
 	min-height: 850px;
+	max-width: 100%;
+
+	/* overflow-x: hidden; */
 }
 
 .footer__copy {

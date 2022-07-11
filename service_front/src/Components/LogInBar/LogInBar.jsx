@@ -160,12 +160,14 @@ export default function LogInBar() {
 						<input
 							type="text"
 							{...user.bind}
+							autoComplete="username"
 							className={'form-item ' + errClass}
 							placeholder="Имя пользователя"
 						/>
 						<input
 							{...password.bind}
 							type="password"
+							autoComplete="current-password"
 							className={'form-item ' + errClass}
 							placeholder="Пароль"
 						/>

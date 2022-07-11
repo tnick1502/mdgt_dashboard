@@ -2,7 +2,7 @@
 	position: relative;
 
 	width: 236px;
-	height: 230px;
+	height: 170px;
 	min-width: fit-content;
 
 	padding: 1rem 1.5rem;
@@ -53,6 +53,35 @@
 	color: var(--color-bad-info);
 }
 
+.current-prize__growth {
+	display: inline-flex;
+	align-items: center;
+}
+
+.current-prize__growth.good {
+	color: var(--color-good-info);
+	fill: var(--color-good-info);
+}
+
+.current-prize__growth.bad {
+	color: var(--color-bad-info);
+	fill: var(--color-bad-info);
+}
+
+.current-prize__growth > svg {
+	color: inherit;
+	fill: inherit;
+}
+
+.current-prize__sub {
+	max-height: var(--normal-font-size);
+
+	display: inline-flex;
+	align-items: center;
+
+	justify-content: space-between;
+}
+
 .current-prize__date {
 	min-height: var(--normal-font-size);
 	color: var(--text-color-light);
@@ -87,7 +116,7 @@
 @media screen and (max-width: 425px) {
 	.current-prize {
 		width: 200px;
-		height: 200px;
+		height: 150px;
 
 		padding: 1.15rem;
 	}

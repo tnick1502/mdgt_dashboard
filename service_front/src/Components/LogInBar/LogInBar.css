@@ -11,6 +11,8 @@
 	display: inline-flex;
 	align-items: center;
 	justify-content: flex-end;
+
+	max-width: none;
 }
 
 .login-form {

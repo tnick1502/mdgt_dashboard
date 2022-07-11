@@ -1,5 +1,6 @@
 .prize-grid {
 	grid-template-rows: min-content min-content;
+	height: fit-content;
 }
 
 .display-cards-wrapper {

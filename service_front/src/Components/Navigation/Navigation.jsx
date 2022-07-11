@@ -7,6 +7,7 @@ import Summary from '../Summary/Summary'
 import Prize from '../Prize/Prize'
 import Reports from '../Reports/Reports'
 import Payments from '../Payments/Payments'
+// import Customers from '../Customers/Customers'
 import NotFound from '../NotFound/NotFound'
 import { useState } from 'react'
 import { useEffect } from 'react'
@@ -26,7 +27,7 @@ export default function Navigation() {
 
 	useEffect(() => {
 		if (forceCollapsed.current) return
-		if (width <= 768) {
+		if (width <= 1024) {
 			setCollapsed(true)
 		} else {
 			setCollapsed(false)
@@ -84,6 +85,18 @@ export default function Navigation() {
 					</svg>
 					{collapsed ? null : 'Выплаты'}
 				</NavLink>
+				{/* <NavLink
+					to="/Customers"
+					className={({ isActive }) =>
+						isActive ? 'nav-link is-active' : 'nav-link'
+					}
+					title="Заказчики"
+				>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24">
+						<path d="M20 4H4c-1.103 0-2 .897-2 2v2h20V6c0-1.103-.897-2-2-2zM2 18c0 1.103.897 2 2 2h16c1.103 0 2-.897 2-2v-6H2v6zm3-3h6v2H5v-2z"></path>
+					</svg>
+					{collapsed ? null : 'Заказчики'}
+				</NavLink> */}
 
 				<button
 					onClick={onExpandBtn}
@@ -117,6 +130,7 @@ export default function Navigation() {
 				<Route path="/Prize" element={<Prize />} />
 				<Route path="/Reports" element={<Reports />} />
 				<Route path="/Payments" element={<Payments />} />
+				{/* <Route path="/Customers" element={<Customers />} /> */}
 
 				{/* 404 Page */}
 				<Route path="*" element={<NotFound />} />

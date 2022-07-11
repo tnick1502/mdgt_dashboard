@@ -31,6 +31,7 @@
 	--small-font-size: 0.813rem;
 	--smaller-font-size: 0.75rem;
 
+	--font-normal: 400;
 	--font-medium: 500;
 	--font-semi-bold: 600;
 
@@ -55,7 +56,9 @@
 	--z-fixed: 100;
 
 	/* app width */
-	--app-max-width: 1024px;
+	--app-max-width: 1920px;
+
+	--chart-min-height: 300px;
 }
 
 *,
@@ -136,6 +139,8 @@ img {
 	/* border: none; */
 	box-shadow: 1px 0px 4px hsla(var(--hue), 24%, 15%, 0.1),
 		-1px 0px 4px hsla(var(--hue), 24%, 15%, 0.1);
+
+	/* max-width: 768px; */
 }
 
 .transparent-item {
@@ -157,6 +162,8 @@ img {
 	min-width: 40vw;
 	min-height: 40vh;
 
+	height: fit-content;
+
 	display: grid;
 	grid-template-columns: 100%;
 
@@ -169,6 +176,8 @@ img {
 	position: relative;
 	height: 100%;
 	width: 100%;
+
+	min-height: var(--chart-min-height);
 
 	display: flex;
 	align-items: center;
@@ -193,10 +202,17 @@ img {
 }
 
 ::-webkit-scrollbar {
-	width: 0.7rem;
-	background: hsl(var(--hue), 4%, 53%);
+	width: 0.3rem;
+	height: 0.3rem;
+	/* background: hsl(var(--hue), 4%, 53%); */
 }
 
 ::-webkit-scrollbar-thumb {
+	background: hsl(var(--hue), 4%, 69%);
+	border-radius: 0.3rem;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
 	background: hsl(var(--hue), 4%, 29%);
 }
