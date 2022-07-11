@@ -1,3 +1,5 @@
+import datetime
+
 from aiogram import Bot, Dispatcher, executor, types, utils
 from dotenv import load_dotenv
 from massages import Massages
@@ -192,6 +194,11 @@ async def birthdays(message: types.Message):
         await message.answer(s if s else "Не найдено")
     except:
         await message.answer("Не найдено")
+
+@dp.message_handler(commands=["time"])
+async def time(message: types.Message):
+    """Запрос текущего времени"""
+    await message.answer(datetime.datetime.now())
 
 @dp.message_handler()
 async def echo(message: types.Message):
