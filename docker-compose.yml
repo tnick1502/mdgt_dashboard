@@ -10,6 +10,8 @@ services:
     volumes:
       - /home/user_bot/disk-z:/files
       - /home/user_bot/databases/:/databases
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
 
   service_customers:
     build: ./service_customers/
@@ -18,6 +20,8 @@ services:
       - 9000:9000
     volumes:
       - /home/user_bot/databases/:/databases
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
 
   web:
     build: ./service_front/
@@ -31,6 +35,9 @@ services:
     container_name: service_bot
     restart: always
     network_mode: host
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
 
 volumes:
   databases:
