@@ -523,7 +523,7 @@ def update_db(excel_directory, excel_path):
             name = wb["Лист1"]['C' + str(i)].value
             if name is not None:
                 birthday = wb["Лист1"]['D' + str(i)].value
-                phone_number = "+7 " + wb["Лист1"]['F' + str(i)].value.replace("-", " ") if wb["Лист1"]['F' + str(i)].value is not None else ""
+                phone_number = "7 " + wb["Лист1"]['F' + str(i)].value.replace("-", " ") if wb["Лист1"]['F' + str(i)].value is not None else ""
 
                 session = Session()
                 get = session.query(tables.Staff).filter_by(full_name=name).first()
