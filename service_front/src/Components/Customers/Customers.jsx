@@ -6,9 +6,11 @@ import Context from '../../context'
 import NotLogged from '../NotLogged/NotLogged'
 import stock from './stock.png'
 import Loader from '../Loader/Loader'
+import { phoneFormatter, formDay } from '../utils'
 
 export default function Customers() {
-	const { isLogged, api_customers } = useContext(Context)
+	const { api_customers } = useContext(Context)
+	const isLogged = true
 	const [customers, setCustomers] = useState([{}])
 
 	const [loaded, setLoaded] = useState(false)
@@ -85,9 +87,11 @@ export default function Customers() {
 															{customer.full_name}
 														</div>
 													</td>
-													<td className="date">{customer.birthday}</td>
+													<td className="date">{formDay(customer.birthday)}</td>
 													<td>{customer.organization}</td>
-													<td className="phone">{customer.phone_number}</td>
+													<td className="phone">
+														{phoneFormatter(customer.phone_number)}
+													</td>
 												</tr>
 											))}
 										</tbody>

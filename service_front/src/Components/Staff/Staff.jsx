@@ -1,15 +1,18 @@
 import React, { useEffect, useState, useContext } from 'react'
 import { useRef } from 'react'
 import Context from '../../context'
+import { formDay } from '../utils'
 
 import './Staff.css'
 
 export default function Staff() {
-	const { isLogged, api } = useContext(Context)
+	const { api } = useContext(Context)
 	const [birthdays, setBirthdays] = useState([])
 	const [loaded, setLoaded] = useState(false)
 
 	const currentMonth = useRef(new Date().getMonth() + 1)
+
+	const isLogged = true
 
 	useEffect(() => {
 		if (!isLogged) {
@@ -29,6 +32,7 @@ export default function Staff() {
 							'birthday' in data[0] &&
 							data[0].birthday.split('-').length === 3
 						) {
+							data = sortBds(data)
 							setBirthdays(data)
 							setLoaded(true)
 						}
@@ -45,12 +49,6 @@ export default function Staff() {
 		}
 	}, [isLogged])
 
-	function formDay(day) {
-		const options = { day: 'numeric', month: 'long' }
-		const date = new Intl.DateTimeFormat('ru-RU', options).format(new Date(day))
-		return date
-	}
-
 	function fromName(fullname) {
 		const splitName = fullname.split(' ')
 		if (splitName.length < 3) {
@@ -65,6 +63,51 @@ export default function Staff() {
 		)
 	}
 
+	function sortBds(data) {
+		const currentDay = new Date().getDate()
+
+		let sortedData = [...data]
+		sortedData = sortedData.sort(function(a, b) {
+			const options = { day: 'numeric' }
+			const first = parseFloat(
+				new Intl.DateTimeFormat('ru-RU', options).format(new Date(a.birthday))
+			)
+			const second = parseFloat(
+				new Intl.DateTimeFormat('ru-RU', options).format(new Date(b.birthday))
+			)
+			return first - second
+		})
+
+		if (sortedData.length < 2) return sortedData
+
+		for (let i = sortedData.length - 1; i >= 0; i--) {
+			const options = { day: 'numeric' }
+			const day = parseFloat(
+				new Intl.DateTimeFormat('ru-RU', options).format(
+					new Date(sortedData[i].birthday)
+				)
+			)
+			if (day < currentDay) {
+				let current = sortedData.splice(0, i + 1)
+				sortedData.push(...current)
+				return sortedData
+			}
+		}
+
+		return sortedData
+	}
+
+	function isToday(date) {
+		const options = { day: 'numeric' }
+		const currentDay = new Date().getDate()
+		// const currentDay = 26
+		const bd = parseFloat(
+			new Intl.DateTimeFormat('ru-RU', options).format(new Date(date))
+		)
+		if (bd === currentDay) return 'bd-card_current'
+		return ''
+	}
+
 	return (
 		<>
 			<div className="staff-item card-item">
@@ -72,7 +115,10 @@ export default function Staff() {
 				<div className="bd-grid">
 					{loaded
 						? birthdays.map((bd) => (
-								<div className="bd-card" key={bd.phone}>
+								<div
+									className={`bd-card ${isToday(bd.birthday)}`}
+									key={bd.phone}
+								>
 									<div className="bd-card__name">{fromName(bd.full_name)}</div>
 									<div className="bd-card__phone">
 										<svg
@@ -98,6 +144,7 @@ export default function Staff() {
 										</svg>
 										{formDay(bd.birthday)}
 									</div>
+									<div className="current">Сегодня</div>
 								</div>
 						  ))
 						: null}

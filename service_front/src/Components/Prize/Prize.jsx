@@ -9,7 +9,8 @@ import DisplayCard from '../DisplayCard/DisplayCard'
 import { parsePrizes } from '../utils'
 
 export default function Prize({ toSummary }) {
-	const { isLogged, api } = useContext(Context)
+	const { api } = useContext(Context)
+	const isLogged = true
 	const [prizes, setPrizes] = useState({ prizes: [], dates: [] })
 
 	const [chartLoaded, setChartLoaded] = useState(false)

@@ -8,7 +8,7 @@
 	row-gap: var(--row-gap);
 	grid-template-rows: min-content auto min-content;
 
-	overflow-x: hidden;
+	/* overflow-x: hidden; */
 }
 
 .content {

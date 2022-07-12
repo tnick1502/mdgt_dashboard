@@ -31,14 +31,21 @@
 }
 
 .bd-card {
+	position: relative;
 	display: flex;
 	flex-direction: column;
 
 	/* width: 344px; */
 	width: 100%;
 
+	/* have to set due to overflow: hidden */
+	height: 172px;
+
 	border: 1px solid var(--first-color-lighten);
 	border-radius: 4px;
+
+	/* to fix cuurent borders bug */
+	overflow: hidden;
 }
 
 .bd-card__name {
@@ -80,6 +87,30 @@
 .bd-card__day svg {
 	fill: var(--text-color);
 	opacity: 0.6;
+}
+
+.current {
+	display: none;
+	position: absolute;
+}
+
+.bd-card.bd-card_current .current {
+	display: inline-flex;
+	right: 0;
+	top: 0;
+
+	justify-content: flex-start;
+
+	border: none;
+	border-bottom-left-radius: 50px;
+
+	padding: 14px 14px 14px 28px;
+
+	color: var(--container-color);
+	background-color: var(--text-color);
+
+	text-transform: uppercase;
+	text-align: right;
 }
 
 @media screen and (max-width: 768px) {

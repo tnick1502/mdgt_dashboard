@@ -55,7 +55,7 @@
 }
 
 .reports-charts .chart-card__chart {
-	min-height: unset;
+	min-height: 300px;
 }
 
 @media screen and (min-width: 1024px) {
@@ -82,8 +82,5 @@
 	.reports-charts {
 		min-height: unset;
 		height: fit-content;
-	}
-	.reports-charts .chart-card__chart {
-		min-height: unset;
 	}
 }

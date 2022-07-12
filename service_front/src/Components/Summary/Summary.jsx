@@ -1,5 +1,4 @@
-import React, { useContext } from 'react'
-import Context from '../../context'
+import React from 'react'
 
 import NotLogged from '../NotLogged/NotLogged'
 
@@ -11,7 +10,8 @@ import Customers from '../Customers/Customers'
 import './Summary.css'
 
 export default function Summary() {
-	const { isLogged } = useContext(Context)
+	// const { isLogged } = useContext(Context)
+	const isLogged = true
 
 	return (
 		<>

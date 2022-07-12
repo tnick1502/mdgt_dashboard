@@ -9,7 +9,8 @@ import ReportsDoughnut from './ReportsDoughnut'
 import ReportsChart from './ReportsChart'
 
 export default function Reports({ toSummary }) {
-	const { isLogged, api } = useContext(Context)
+	const { api } = useContext(Context)
+	const isLogged = true
 	const [reports, setReports] = useState({ reports: [], dates: [] })
 
 	const [reportsLoaded, setReportsLoaded] = useState(false)
