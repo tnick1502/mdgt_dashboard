@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Date, Float, String, Integer
+from sqlalchemy import Column, Date, Float, String, Integer, BigInteger
 from sqlalchemy.ext.declarative import declarative_base
 
 
@@ -39,5 +39,5 @@ class Staff(Base):
 
     id = Column(Integer, primary_key=True)
     full_name = Column(String)
-    phone = Column(String)
+    phone = Column(BigInteger, nullable=True)
     birthday = Column(Date)

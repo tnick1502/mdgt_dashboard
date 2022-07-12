@@ -3,7 +3,7 @@ from datetime import date
 
 class StaffBase(BaseModel):
     full_name: str
-    phone: str
+    phone: int
     birthday: date
 
 class Staff(StaffBase):
