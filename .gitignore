@@ -1,7 +1,6 @@
 venv
 .env
 bot/.env
-bot/prize.json
 app/.env
 app_customers/.env
 **/.idea
