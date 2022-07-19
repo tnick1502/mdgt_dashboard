@@ -20,6 +20,6 @@ class Settings(BaseSettings):
 
     jwt_secret: str = "OOIOIPSJFBSFBSBGBBSB"
     jwt_algorithm: str = "HS256"
-    jwt_expiration: int = 3600
+    jwt_expiration: int = 3 #days
 
 settings = Settings()

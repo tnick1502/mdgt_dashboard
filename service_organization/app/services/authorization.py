@@ -91,7 +91,7 @@ class AuthService:
         payload = {
             'iat': now,
             'nbf': now,
-            'exp': now + timedelta(seconds=settings.jwt_expiration),
+            'exp': now + timedelta(days=settings.jwt_expiration),
             'sub': str(user_data.id),
             'user': user_data.dict(),
         }
